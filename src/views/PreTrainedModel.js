@@ -19,7 +19,7 @@ import {
 } from "reactstrap"
 
 
-const Toxicity = (props) => {
+const PreTrainedModel = (props) => {
     const [model, setModel] = useState([]);
     const [textToxicity, setTextToxicity] = useState(undefined);
     const [resultToxicity, setResultToxicity] = useState([]);
@@ -89,7 +89,7 @@ const Toxicity = (props) => {
                             <Row className="align-items-center">
                                 <div className="col">
                                     
-                                    <h3 className="pb-1"><i className="fas fa-biohazard"></i> Toxicity</h3>
+                                    <h5 className="pb-1"><i className="fas fa-biohazard"></i> Toxicity - Pre-Trained Model</h5>
                                 </div>
                                 <div className="col text-right">
 
@@ -167,4 +167,4 @@ const Toxicity = (props) => {
 
 }
 
-export default Toxicity;
+export default PreTrainedModel;

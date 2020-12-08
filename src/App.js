@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Navbar, NavbarBrand, NavbarToggler, Collapse, Nav, NavItem, NavLink, NavbarText } from 'reactstrap';
-import Toxicity from './views/Toxicity';
-import About from './views/About';
+import PreTrainedModel from './views/PreTrainedModel';
+import CreateTrainTest from './views/CreateTrainTest';
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,18 +20,18 @@ function App() {
             <Collapse isOpen={isOpen} navbar>
               <Nav className="mr-auto" navbar>
                 <NavItem>
-                  <NavLink href="/">Home</NavLink>
+                  <NavLink href="/">Pre-Trained Model</NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink href="/about">About</NavLink>
+                  <NavLink href="/CreateTrainTest">Create Train & Test</NavLink>
                 </NavItem>
               </Nav>
-              <NavbarText>Toxic comment classification using Tensorflow and react.js</NavbarText>
+              <NavbarText>Toxic comment classification using Tensorflow and React.js</NavbarText>
             </Collapse>
           </Navbar>
           <Switch>
-            <Route path="/about" component={props => <About />} />
-            <Route path="/" component={props => <Toxicity />} />
+            <Route path="/CreateTrainTest" component={props => <CreateTrainTest />} />
+            <Route path="/" component={props => <PreTrainedModel />} />
           </Switch>
         </div>
       </BrowserRouter>
