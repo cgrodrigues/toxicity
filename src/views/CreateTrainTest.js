@@ -18,7 +18,8 @@ import {
     Input,
     ListGroup,
     ListGroupItem,
-    Badge
+    Badge,
+    Spinner
 } from "reactstrap";
 
 
@@ -29,16 +30,20 @@ const CreateTrainTest = (props) => {
     const noWordInLine = "NWIL"; // In sentences with less of "maxLength" words the remaining positions will be filled with this.
 
     const vocalSize = 3000; // Maximum number of words used by tokenization, not all words in setences will be hear. 
-    // If any word in the setence is not hear the return will be the token for "noWordInLine"   
+                            // If any word in the setence is not hear the return will be the token for "oovToken"   
 
-    const maxLines = 20000; //Maximum lines to process from the file
+    const oovToken = "outofvocabulary";  // teh word is not in the words used for tokenization
+
+    const maxLines = 200000; //Maximum lines to process from the file
 
     // list of stop words to remove of teh text
-    const stopWords = ["a", "about", "above", "after", "again", "against", "all", "am", "an", "and", "any", "are", "as", "at", "be", "because", "been", "before", "being", "below", "between", "both", "but", "by", "could", "did", "do", "does", "doing", "down", "during", "each", "few", "for", "from", "further", "had", "has", "have", "having", "he", "he'd", "he'll", "he's", "her", "here", "here's", "hers", "herself", "him", "himself", "his", "how", "how's", "i", "i'd", "i'll", "i'm", "i've", "if", "in", "into", "is", "it", "it's", "its", "itself", "let's", "me", "more", "most", "my", "myself", "nor", "of", "on", "once", "only", "or", "other", "ought", "our", "ours", "ourselves", "out", "over", "own", "same", "she", "she'd", "she'll", "she's", "should", "so", "some", "such", "than", "that", "that's", "the", "their", "theirs", "them", "themselves", "then", "there", "there's", "these", "they", "they'd", "they'll", "they're", "they've", "this", "those", "through", "to", "too", "under", "until", "up", "very", "was", "we", "we'd", "we'll", "we're", "we've", "were", "what", "what's", "when", "when's", "where", "where's", "which", "while", "who", "who's", "whom", "why", "why's", "with", "would", "you", "you'd", "you'll", "you're", "you've", "your", "yours", "yourself", "yourselves"];
+    //const stopWords = ["a", "about", "above", "after", "again", "against", "all", "am", "an", "and", "any", "are", "as", "at", "be", "because", "been", "before", "being", "below", "between", "both", "but", "by", "could", "did", "do", "does", "doing", "down", "during", "each", "few", "for", "from", "further", "had", "has", "have", "having", "he", "he'd", "he'll", "he's", "her", "here", "here's", "hers", "herself", "him", "himself", "his", "how", "how's", "i", "i'd", "i'll", "i'm", "i've", "if", "in", "into", "is", "it", "it's", "its", "itself", "let's", "me", "more", "most", "my", "myself", "nor", "no", "of", "on", "once", "only", "or", "other", "ought", "our", "ours", "ourselves", "out", "over", "own", "same", "she", "she'd", "she'll", "she's", "should", "so", "some", "such", "than", "that", "that's", "the", "their", "theirs", "them", "themselves", "then", "there", "there's", "these", "they", "they'd", "they'll", "they're", "they've", "this", "those", "through", "to", "too", "under", "until", "up", "very", "was", "we", "we'd", "we'll", "we're", "we've", "were", "what", "what's", "when", "when's", "where", "where's", "which", "while", "who", "who's", "whom", "why", "why's", "with", "would", "you", "you'd", "you'll", "you're", "you've", "your", "yours", "yourself", "yourselves",
+    //                  "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 
-
-    // Information that we want to maintain 
+    const stopWords = ['a', 'about', 'above', 'after', 'again', 'against', 'ain', 'all', 'am', 'an', 'and', 'any', 'are', 'aren', "aren't", 'as', 'at', 'b', 'be', 'because', 'been', 'before', 'being', 'below', 'between', 'both', 'but', 'by', 'c', 'can', 'couldn', "couldn't", 'd', 'did', 'didn', "didn't", 'do', 'does', 'doesn', "doesn't", 'doing', 'don', "don't", 'down', 'during', 'e', 'each', 'f', 'few', 'for', 'from', 'further', 'g', 'h', 'had', 'hadn', "hadn't", 'has', 'hasn', "hasn't", 'have', 'haven', "haven't", 'having', 'he', 'her', 'here', 'hers', 'herself', 'him', 'himself', 'his', 'how', 'i', 'if', 'in', 'into', 'is', 'isn', "isn't", 'it', "it's", 'its', 'itself', 'j', 'just', 'k', 'l', 'll', 'm', 'ma', 'me', 'mightn', "mightn't", 'more', 'most', 'mustn', "mustn't", 'my', 'myself', 'needn', "needn't", 'n', 'no', 'nor', 'not', 'now', 'o', 'of', 'off', 'on', 'once', 'only', 'or', 'other', 'our', 'ours', 'ourselves', 'out', 'over', 'own', 'p', 'q', 'r', 're', 's', 'same', 'shan', "shan't", 'she', "she's", 'should', "should've", 'shouldn', "shouldn't", 'so', 'some', 'such', 't', 'than', 'that', "that'll", 'the', 'their', 'theirs', 'them', 'themselves', 'then', 'there', 'these', 'they', 'this', 'those', 'through', 'to', 'too', 'u', 'under', 'until', 'up', 've', 'v', 'very', 'w', 'was', 'wasn', "wasn't", 'we', 'were', 'weren', "weren't", 'what', 'when', 'where', 'which', 'while', 'who', 'whom', 'why', 'will', 'with', 'won', "won't", 'wouldn', "wouldn't", 'y', 'you', "you'd", "you'll", "you're", "you've", 'your', 'yours', 'yourself', 'yourselves', 'x','z'];    // Information that we want to maintain 
+    
     const [info, setInfo] = useState({
+        processing: {file:false, modelCreation:false, training: false, classification: false},
         fileCsv: undefined, // Loaded file with the training data
         data: undefined, // array with sentances x words used for training. Each element is a word. Each line is a sentance. 
         dataTokenized: undefined,  // data Tokenized
@@ -108,11 +113,7 @@ const CreateTrainTest = (props) => {
         
         // Remove stop words and other characters
         sentences = sentences.map((item) => {
-            return stopWords.reduce((acc, stopWord) => {
-                const regex = new RegExp("^\\s*" + stopWord + "\\s*$|^\\s*" + stopWord + "\\s+|\\s+" + stopWord + "\\s*$|\\s+" + stopWord + "\\s+", "ig");
-                return acc.replace(regex, " ");
-            }, item)
-                .replace("\n", " ")
+            return item.replace("\n", " ")
                 .replace("\\", " ")
                 .replace("\b", " ")
                 .replace("\f", " ")
@@ -123,16 +124,62 @@ const CreateTrainTest = (props) => {
                 .replace("-", " ")
                 .replace("n't", " not ")
                 .replace("'scuse", " excuse ")
-                .replace(/[&/\\#,+=()$~%!|.'":*?<>{}[\]\d]/ig, " ")
-                .replace(/\s+/g, " ")
-                .trim();
+                .replace(/[&/\\#,+=()$~%!|.":*?<>{}[\]\d]/ig, " ")
+                
         });
+
+        console.log(sentences);
+
+        sentences = sentences.map((item) => {
+            return stopWords.reduce((acc, stopWord) => {
+                const regex = new RegExp("^\\s*" + stopWord + "\\s*$" +
+                                         "|^\\s*" + stopWord + "\\s+" +
+                                         "|\\s+" + stopWord + "\\s*$" +
+                                         "|\\s+" + stopWord + "\\s+", "ig");
+
+                return acc.replace(regex, " ");
+            }, item).replace(/\s+/g, " ")
+                    .trim();
+        });
+
+        console.log(sentences);
 
         // Convert sentences to words
         const words = sentences.map((item) => { return resize(item.split(" "), maxLength, noWordInLine) });
 
 
+        console.log(words);
+
         // Create array with all words and id as token and add "noWordInLine"
+
+        let tokenizer = words.flat();
+
+        console.log('after flat');
+        
+        tokenizer = tokenizer.reduce((acc, el) => { 
+            const x = acc.find(obj => obj.word === el); 
+            if (x){ 
+                x.ct = x.ct + 1;
+             } 
+             else{
+                 acc.push({ct: 1, word: el})
+             } 
+             return acc;
+         }, [{ ct: vocalSize*100+1, word: noWordInLine }, 
+             { ct: vocalSize*100, word: oovToken }]);
+        
+        console.log('after reduce');
+                  
+        tokenizer = tokenizer.sort((a,b) =>{return b.ct - a.ct;});
+
+        console.log('after sort');
+
+        tokenizer = tokenizer.map((el, ind) => {return { ct: el.ct, token: ind, word: el.word }});
+
+        console.log('after map');
+
+
+        /*
         let tokenizer = words.flat().reduce((acc, el, idx) => { 
             const x = acc.find(obj => obj.word === el); 
             if (x){ 
@@ -142,9 +189,11 @@ const CreateTrainTest = (props) => {
                  acc.push({ct: 1, word: el})
              } 
              return acc;
-         }, [{ ct: vocalSize, token: -1, word: noWordInLine }]).sort((a,b) =>{return b.ct - a.ct;})
+         }, [{ ct: vocalSize*100+1, word: noWordInLine }, 
+             { ct: vocalSize*100, word: oovToken }]).sort((a,b) =>{return b.ct - a.ct;})
          .map((el, ind) => {return { ct: el.ct, token: ind, word: el.word }});
-
+        */
+         console.log(tokenizer);
         /*
         let tokenizer = words.flat().filter(
             (item, pos, self) => {
@@ -167,7 +216,7 @@ const CreateTrainTest = (props) => {
                 return sent.map(
                     (item) => {
                         const retItem = tokenizer.find((i) => { return i.word === item; });
-                        return (retItem ? retItem.token : 0);
+                        return (retItem ? retItem.token : 1);
                     })
             });
 
@@ -183,7 +232,11 @@ const CreateTrainTest = (props) => {
         });
 
         // Store all information in "info" variable. 
-        setInfo({ ...info, tokenizer: tokenizer, data: words, dataTokenized: wordsTokenized, target: target });
+        setInfo({ ...info, tokenizer: tokenizer, 
+                           data: words, 
+                           dataTokenized: wordsTokenized, 
+                           target: target,
+                           processing: {...info.processing, file: false} });
 
         alert("File processing concluded!!");
     }
@@ -221,7 +274,7 @@ const CreateTrainTest = (props) => {
      * @see
      */
     function createModel() {
-        const embedingDim = 32;
+        const embedingDim = 32 //15;   //32;
 
         // Create a sequential model
         const model = tf.sequential();
@@ -250,9 +303,6 @@ const CreateTrainTest = (props) => {
         // Compile the model
         model.compile({ loss: 'binaryCrossentropy', optimizer: tf.train.adam(), metrics: ['accuracy'] });
 
-        let modelInfo = "";
-
-        //const printFn  = (message) => {modelInfo = modelInfo + message}
 
         //model.summary(undefined,[],printFn);
         var surface = document.getElementById('ModelInfo');
@@ -260,8 +310,7 @@ const CreateTrainTest = (props) => {
 
 
         // Store the model in the "info"
-
-        setInfo({ ...info, model: model, modelInfo: modelInfo });
+        setInfo({ ...info, model: model});
     }
 
     /**
@@ -270,35 +319,42 @@ const CreateTrainTest = (props) => {
      * @return  nothing 
      * @see
      */
-    function trainModel() {
+    async function trainModel() {
 
         // Convert the input and label data to Tensors
         console.log(info.dataTokenized);
+        console.log(info);
+
+        setInfo({...info, processing: {...info.processing, training: true} });
+
         const inputTensor = tf.tensor2d(info.dataTokenized, [info.dataTokenized.length, maxLength]);
         inputTensor.print();
         const labelTensor = tf.tensor2d(info.target, [info.target.length, 6]);
+        labelTensor.print();
 
         // Variables to store the training history
         const historyEpoch = [];
-        const historyBatch = [];
+        //const historyBatch = [];
 
-        const surface1 = document.getElementById('BatchGraph');
+        //const surface1 = document.getElementById('BatchGraph');
         const surface2 = document.getElementById('EpochGraph');
 
         // Callbacks functions to use during the training
         const cBack = [
-            tf.callbacks.earlyStopping({monitor: 'val_acc'}), 
+            tf.callbacks.earlyStopping({monitor: 'val_acc'}), /*
             new tf.CustomCallback({onBatchEnd: (batch, log) => {
                 //console.log(batch);
                 //console.log(log);
                 historyBatch.push(log);
                 //console.log(historyBatch);
-                tfvis.show.history(surface1, historyBatch, ['loss', 'acc'], { height: 200});
-            }}),
+                if (historyBatch.length%10 === 0 || historyBatch.length === 1){
+                    tfvis.show.history(surface1, historyBatch, ['loss', 'acc'], { height: 200});
+                } 
+            }}),*/
             new tf.CustomCallback({onEpochEnd: (epoch, log) => {
                 //console.log(epoch);
                 //console.log(log);
-
+  
                 historyEpoch.push(log);
                 //console.log(historyEpoch);
                 tfvis.show.history(surface2, historyEpoch, ['loss', 'val_loss', 'acc', 'val_acc'], { height: 200});
@@ -310,18 +366,18 @@ const CreateTrainTest = (props) => {
             new tf.CustomCallback({onTrainEnd: (logs) => {
                 //console.log('onTrainEnd:' );
                 //console.log(logs);
-                setInfo({...info, trained: true});
+                setInfo({...info, trained: true, processing: {...info.processing, training: false} });
                 alert("Trainning concluded!!");
             }})
         ];
 
         // Train the model
         info.model.fit(inputTensor, labelTensor, {
-            batchSize: 32,
-            epochs: 4,
+            batchSize: 32, //500, //32,
+            epochs: 5,
             shuffle: true,
             callbacks: cBack,
-            validationSplit: 0.15
+            validationSplit: 0.20
         });
 
         
@@ -340,6 +396,19 @@ const CreateTrainTest = (props) => {
         // Change to lower case
         let sentence = info.classifyText.toLowerCase();
 
+        sentence = sentence.replace("\n", " ")
+                            .replace("\\", " ")
+                            .replace("\b", " ")
+                            .replace("\f", " ")
+                            .replace("\r", " ")
+                            .replace("\t", " ")
+                            .replace("'s", " ")
+                            .replace("can't", "cannot ")
+                            .replace("-", " ")
+                            .replace("n't", " not ")
+                            .replace("'scuse", " excuse ")
+                            .replace(/[&/\\#,+=()$~%!|.":*?<>{}[\]\d]/ig, " ")
+
         console.log(sentence);
         // Remove stop words and other characters
         sentence = stopWords.reduce((acc, stopWord) => {
@@ -349,21 +418,11 @@ const CreateTrainTest = (props) => {
                                                              "|\\s+" + stopWord + "\\s+", "ig");
                                     return acc.replace(regex, " ");
             }, sentence)
-            .replace("\n", " ")
-            .replace("\\", " ")
-            .replace("\b", " ")
-            .replace("\f", " ")
-            .replace("\r", " ")
-            .replace("\t", " ")
-            .replace("'s", " ")
-            .replace("can't", "cannot ")
-            .replace("-", " ")
-            .replace("n't", " not ")
-            .replace("'scuse", " excuse ")
-            .replace(/[&/\\#,+=()$~%!|.'":*?<>{}[\]\d]/ig, " ")
             .replace(/\s+/g, " ")
             .trim();
 
+        console.log(sentence);
+        
         // Convert sentence to words
         const input = resize(sentence.split(" "), maxLength, noWordInLine);
 
@@ -393,12 +452,12 @@ const CreateTrainTest = (props) => {
         console.log(targetValue);
 
         setInfo({...info, result: {
-                            toxic: targetValue?showPercentage(targetValue[0]):undefined, 
-                            severe_toxic: targetValue?showPercentage(targetValue[1]):undefined,  
+                            identity_hate: targetValue?showPercentage(targetValue[0]):undefined, 
+                            insult: targetValue?showPercentage(targetValue[1]):undefined,  
                             obscene: targetValue?showPercentage(targetValue[2]):undefined, 
-                            threat: targetValue?showPercentage(targetValue[3]):undefined, 
-                            insult: targetValue?showPercentage(targetValue[4]):undefined, 
-                            identity_hate: targetValue?showPercentage(targetValue[5]):undefined
+                            severe_toxic: targetValue?showPercentage(targetValue[3]):undefined, 
+                            threat: targetValue?showPercentage(targetValue[4]):undefined, 
+                            toxic: targetValue?showPercentage(targetValue[5]):undefined
                         }
         });
 
@@ -422,7 +481,8 @@ const CreateTrainTest = (props) => {
      * @return  nothing 
      * @see
      */
-    function handleLoadFile() {
+    async function handleLoadFile() {
+        setInfo({...info, processing: {...info.processing, file: true}});
         getData(info.fileCsv, ',');
     }
 
@@ -449,10 +509,22 @@ const CreateTrainTest = (props) => {
     }
 
 
+    //Print header table
+    const printTableHeader5Lines = (arr)  => {
+        if (arr){
+            const ret = arr[0].map( (w, i) => {return <th key={i}>{'w' + i}</th>});
+            return <tr key={-1}><th scope="row">#</th>{ret}</tr>;
+        }
+        else{
+            return undefined;  
+        }
+    };
+
+
 
     //Print into table
-    let printTable5Lines = (arr) => arr&&arr.slice(0, 5).map((sentence, id) => {
-        const ret = sentence.map((word, i) => { return <td key={i}>{word}</td> }, '');
+    const printTable5Lines = (arr) => arr&&arr.slice(0, 5).map((sentence, id) => {
+        const ret = sentence.map((word, i) => { return <td key={i}>{word}</td> });
         return <tr key={id}><th scope="row">{id}</th>{ret}</tr>;
     });
 
@@ -498,21 +570,28 @@ const CreateTrainTest = (props) => {
                                                                 <span className="btn-inner--icon mr-0">
                                                                     <i className="fas fa-binoculars"></i>
                                                                 </span>
-                                                                <span className="btn-inner--text d-none d-lg-inline"> Load File</span>
-
+                                                                <span className="btn-inner--text d-none d-lg-inline"> 
+                                                                {!info.processing.file ? " Load File" : " Loading.."}</span>
+                                                                {info.processing.file ? (
+                                                                    <Spinner
+                                                                    style={{ width: "0.7rem", height: "0.7rem" }}
+                                                                    type="grow"
+                                                                    color="light"
+                                                                    />
+                                                                ):null}
                                                             </Button>
                                                         </FormGroup>
                                                     </Col>
                                                 </Row>
                                                 <Row>
-                                                    <Table responsive size="sm"><tbody>{printTable5Lines(info.data)}</tbody></Table>
-                                                    <Table responsive size="sm"><tbody>{printTable5Lines(info.dataTokenized)}</tbody></Table>
+                                                    <Table striped responsive size="sm"><thead>{printTableHeader5Lines(info.data)}</thead><tbody>{printTable5Lines(info.data)}</tbody></Table>
+                                                    <Table striped responsive size="sm"><thead>{printTableHeader5Lines(info.dataTokenized)}</thead><tbody>{printTable5Lines(info.dataTokenized)}</tbody></Table>
                                                 </Row>
                                             </Col>
                                         </CardText>
                                     </CardBody>
                                 </Card>
-                                <div>
+                                <div>   
                                     <Card>
                                         <CardHeader><i className="fab fa-buromobelexperte"></i> 2 - Create a Prediction Model</CardHeader>
                                         <CardBody>
@@ -558,14 +637,27 @@ const CreateTrainTest = (props) => {
                                                             <span className="btn-inner--icon mr-0">
                                                                 <i className="fas fa-dumbbell"></i>
                                                             </span>
-                                                            <span className="btn-inner--text d-none d-lg-inline"> Train Model</span>
+                                                            <span className="btn-inner--text d-none d-lg-inline">
+                                                            {!info.processing.training ? " Train Model" : " Training.."}</span>
+                                                                {info.processing.training ? (
+                                                                    <Spinner
+                                                                    style={{ width: "0.7rem", height: "0.7rem" }}
+                                                                    type="grow"
+                                                                    color="light"
+                                                                    />
+                                                                ):null}
                                                         </Button>
                                                     </FormGroup>
                                                 </Row>
                                                 <Row>
-                                                    <div id="BatchGraph"></div>
-                                                    <br></br>
-                                                    <div id="EpochGraph"></div>
+                                                    <Col>
+                                                        <div id="BatchGraph"></div>
+                                                    </Col>
+                                                </Row>  
+                                                <Row>
+                                                    <Col>
+                                                        <div id="EpochGraph"></div>
+                                                    </Col>
                                                 </Row>
                                             </Col>
                                         </CardText>
