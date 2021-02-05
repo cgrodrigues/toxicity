@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import * as toxicity from '@tensorflow-models/toxicity';
 import '@tensorflow/tfjs';
 
-
-
 import {
     Card,
     Container,
@@ -61,7 +59,6 @@ const PreTrainedModel = (props) => {
                 }
             ]);
 
-            //setTextToxicity('');
         });
     }
 

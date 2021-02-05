@@ -37,9 +37,6 @@ const CreateTrainTest = (props) => {
     const maxLines = 200000; //Maximum lines to process from the file
 
     // list of stop words to remove of teh text
-    //const stopWords = ["a", "about", "above", "after", "again", "against", "all", "am", "an", "and", "any", "are", "as", "at", "be", "because", "been", "before", "being", "below", "between", "both", "but", "by", "could", "did", "do", "does", "doing", "down", "during", "each", "few", "for", "from", "further", "had", "has", "have", "having", "he", "he'd", "he'll", "he's", "her", "here", "here's", "hers", "herself", "him", "himself", "his", "how", "how's", "i", "i'd", "i'll", "i'm", "i've", "if", "in", "into", "is", "it", "it's", "its", "itself", "let's", "me", "more", "most", "my", "myself", "nor", "no", "of", "on", "once", "only", "or", "other", "ought", "our", "ours", "ourselves", "out", "over", "own", "same", "she", "she'd", "she'll", "she's", "should", "so", "some", "such", "than", "that", "that's", "the", "their", "theirs", "them", "themselves", "then", "there", "there's", "these", "they", "they'd", "they'll", "they're", "they've", "this", "those", "through", "to", "too", "under", "until", "up", "very", "was", "we", "we'd", "we'll", "we're", "we've", "were", "what", "what's", "when", "when's", "where", "where's", "which", "while", "who", "who's", "whom", "why", "why's", "with", "would", "you", "you'd", "you'll", "you're", "you've", "your", "yours", "yourself", "yourselves",
-    //                  "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
-
     const stopWords = ['a', 'about', 'above', 'after', 'again', 'against', 'ain', 'all', 'am', 'an', 'and', 'any', 'are', 'aren', "aren't", 'as', 'at', 'b', 'be', 'because', 'been', 'before', 'being', 'below', 'between', 'both', 'but', 'by', 'c', 'can', 'couldn', "couldn't", 'd', 'did', 'didn', "didn't", 'do', 'does', 'doesn', "doesn't", 'doing', 'don', "don't", 'down', 'during', 'e', 'each', 'f', 'few', 'for', 'from', 'further', 'g', 'h', 'had', 'hadn', "hadn't", 'has', 'hasn', "hasn't", 'have', 'haven', "haven't", 'having', 'he', 'her', 'here', 'hers', 'herself', 'him', 'himself', 'his', 'how', 'i', 'if', 'in', 'into', 'is', 'isn', "isn't", 'it', "it's", 'its', 'itself', 'j', 'just', 'k', 'l', 'll', 'm', 'ma', 'me', 'mightn', "mightn't", 'more', 'most', 'mustn', "mustn't", 'my', 'myself', 'needn', "needn't", 'n', 'no', 'nor', 'not', 'now', 'o', 'of', 'off', 'on', 'once', 'only', 'or', 'other', 'our', 'ours', 'ourselves', 'out', 'over', 'own', 'p', 'q', 'r', 're', 's', 'same', 'shan', "shan't", 'she', "she's", 'should', "should've", 'shouldn', "shouldn't", 'so', 'some', 'such', 't', 'than', 'that', "that'll", 'the', 'their', 'theirs', 'them', 'themselves', 'then', 'there', 'these', 'they', 'this', 'those', 'through', 'to', 'too', 'u', 'under', 'until', 'up', 've', 'v', 'very', 'w', 'was', 'wasn', "wasn't", 'we', 'were', 'weren', "weren't", 'what', 'when', 'where', 'which', 'while', 'who', 'whom', 'why', 'will', 'with', 'won', "won't", 'wouldn', "wouldn't", 'y', 'you', "you'd", "you'll", "you're", "you've", 'your', 'yours', 'yourself', 'yourselves', 'x','z'];    // Information that we want to maintain 
     
     const [info, setInfo] = useState({
@@ -120,7 +117,7 @@ const CreateTrainTest = (props) => {
                 .replace("\r", " ")
                 .replace("\t", " ")
                 .replace("'s", " ")
-                .replace("can't", "cannot ")
+                .replace("can't", " cannot ")
                 .replace("-", " ")
                 .replace("n't", " not ")
                 .replace("'scuse", " excuse ")
@@ -177,33 +174,6 @@ const CreateTrainTest = (props) => {
         tokenizer = tokenizer.map((el, ind) => {return { ct: el.ct, token: ind, word: el.word }});
 
         console.log('after map');
-
-
-        /*
-        let tokenizer = words.flat().reduce((acc, el, idx) => { 
-            const x = acc.find(obj => obj.word === el); 
-            if (x){ 
-                x.ct = x.ct + 1;
-             } 
-             else{
-                 acc.push({ct: 1, word: el})
-             } 
-             return acc;
-         }, [{ ct: vocalSize*100+1, word: noWordInLine }, 
-             { ct: vocalSize*100, word: oovToken }]).sort((a,b) =>{return b.ct - a.ct;})
-         .map((el, ind) => {return { ct: el.ct, token: ind, word: el.word }});
-        */
-         console.log(tokenizer);
-        /*
-        let tokenizer = words.flat().filter(
-            (item, pos, self) => {
-                return self.indexOf(item) === pos;
-            }).reduce(
-                (acc, el, i) => {
-                    return [...acc, { token: i + 1, word: el }]
-                },
-                []);
-        */
 
         // Resize the array to has a maximum size "vocalSize"
         if (tokenizer.length > vocalSize) {
@@ -341,31 +311,17 @@ const CreateTrainTest = (props) => {
 
         // Callbacks functions to use during the training
         const cBack = [
-            tf.callbacks.earlyStopping({monitor: 'val_acc'}), /*
-            new tf.CustomCallback({onBatchEnd: (batch, log) => {
-                //console.log(batch);
-                //console.log(log);
-                historyBatch.push(log);
-                //console.log(historyBatch);
-                if (historyBatch.length%10 === 0 || historyBatch.length === 1){
-                    tfvis.show.history(surface1, historyBatch, ['loss', 'acc'], { height: 200});
-                } 
-            }}),*/
-            new tf.CustomCallback({onEpochEnd: (epoch, log) => {
-                //console.log(epoch);
-                //console.log(log);
-  
+            tf.callbacks.earlyStopping({monitor: 'val_acc'}), 
+            new tf.CustomCallback({onEpochEnd: (epoch, log) => {  
+                console.log('onEpochEnd:' );
                 historyEpoch.push(log);
-                //console.log(historyEpoch);
                 tfvis.show.history(surface2, historyEpoch, ['loss', 'val_loss', 'acc', 'val_acc'], { height: 200});
             }}),
             new tf.CustomCallback({onTrainBegin: (logs) => {
-                //console.log('onTrainBegin:' );
-                //console.log(logs);
+                console.log('onTrainBegin:' );
             }}),
             new tf.CustomCallback({onTrainEnd: (logs) => {
-                //console.log('onTrainEnd:' );
-                //console.log(logs);
+                console.log('onTrainEnd:' );
                 setInfo({...info, trained: true, processing: {...info.processing, training: false} });
                 alert("Trainning concluded!!");
             }})
