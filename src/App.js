@@ -15,23 +15,23 @@ function App() {
       <BrowserRouter>
         <div>
           <Navbar color="light" light expand="md">
-            <NavbarBrand href="/">Toxicity</NavbarBrand>
+            <NavbarBrand href="/toxicity">Toxicity</NavbarBrand>
             <NavbarToggler onClick={toggle} />
             <Collapse isOpen={isOpen} navbar>
               <Nav className="mr-auto" navbar>
                 <NavItem>
-                  <NavLink href="/">Pre-Trained Model</NavLink>
+                  <NavLink href="/toxicity">Pre-Trained Model</NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink href="/CreateTrainTest">Create Train & Test</NavLink>
+                  <NavLink href="/toxicity/CreateTrainTest">Create Train & Test</NavLink>
                 </NavItem>
               </Nav>
               <NavbarText>Toxic comment classification using Tensorflow and React.js</NavbarText>
             </Collapse>
           </Navbar>
           <Switch>
-            <Route path="/CreateTrainTest" component={props => <CreateTrainTest />} />
-            <Route path="/" component={props => <PreTrainedModel />} />
+            <Route path="/toxicity/CreateTrainTest" component={props => <CreateTrainTest />} />
+            <Route path="/toxicity" component={props => <PreTrainedModel />} />
           </Switch>
         </div>
       </BrowserRouter>
