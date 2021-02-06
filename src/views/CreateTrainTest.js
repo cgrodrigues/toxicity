@@ -14,7 +14,6 @@ import {
     Button,
     CardSubtitle,
     CardDeck,
-    CardText,
     Input,
     ListGroup,
     ListGroupItem,
@@ -505,7 +504,6 @@ const CreateTrainTest = (props) => {
                                     <CardHeader><i className="fas fa-upload"></i> 1 - Load & Process Data</CardHeader>
                                     <CardBody>
                                         <CardSubtitle className="mb-2 text-muted">Load data from file and transform in tensors to use in a prediction model training and validation.</CardSubtitle>
-                                        <CardText>
                                             <Col>
                                                 <Row>
                                                     <Col>
@@ -544,7 +542,6 @@ const CreateTrainTest = (props) => {
                                                     <Table striped responsive size="sm"><thead>{printTableHeader5Lines(info.dataTokenized)}</thead><tbody>{printTable5Lines(info.dataTokenized)}</tbody></Table>
                                                 </Row>
                                             </Col>
-                                        </CardText>
                                     </CardBody>
                                 </Card>
                                 <div>   
@@ -552,8 +549,6 @@ const CreateTrainTest = (props) => {
                                         <CardHeader><i className="fab fa-buromobelexperte"></i> 2 - Create a Prediction Model</CardHeader>
                                         <CardBody>
                                             <CardSubtitle className="mb-2 text-muted">Create a sequencial prediction model with five layers.</CardSubtitle>
-                                            <CardText>
-
                                                 <Col>
                                                     <Row>
                                                         <FormGroup>
@@ -573,7 +568,6 @@ const CreateTrainTest = (props) => {
                                                         <div id="ModelInfo" name="ModelInfo"></div>
                                                     </Row>
                                                 </Col>
-                                            </CardText>
                                         </CardBody>
                                     </Card>
                                     <div>&nbsp;</div>
@@ -581,7 +575,6 @@ const CreateTrainTest = (props) => {
                                     <CardHeader><i className="fas fa-plane-departure"></i> 3 - Start to Train Model</CardHeader>
                                     <CardBody>
                                         <CardSubtitle className="mb-2 text-muted">Train the created model with the loaded training data.</CardSubtitle>
-                                        <CardText>
                                             <Col>
                                                 <Row>
                                                     <FormGroup>
@@ -616,7 +609,6 @@ const CreateTrainTest = (props) => {
                                                     </Col>
                                                 </Row>
                                             </Col>
-                                        </CardText>
                                     </CardBody>
                                 </Card>
                                 </div>
@@ -624,7 +616,6 @@ const CreateTrainTest = (props) => {
                                     <CardHeader><i className="fas fa-stethoscope"></i> 4 - Test the Model</CardHeader>
                                     <CardBody>
                                         <CardSubtitle className="mb-2 text-muted">Last step is test the model with new data.</CardSubtitle>
-                                        <CardText>
                                             <Row>
                                                 <Col>
                                                     <Input 
@@ -636,8 +627,7 @@ const CreateTrainTest = (props) => {
                                                         onChange={handleTextChange} />
                                                 </Col>
                                             </Row>
-                                            </CardText>
-                                            <CardText>
+                                            <Row>&nbsp;</Row>
                                             <Row>
                                                 <Col>
                                                     <Button disabled={!info.trained}
@@ -653,8 +643,7 @@ const CreateTrainTest = (props) => {
                                                     </Button>
                                                 </Col>
                                             </Row>
-                                            </CardText>
-                                            <CardText>
+                                            <Row>&nbsp;</Row>
                                             <Row>
                                                 <Col sm="12" md={{ size: 8, offset: 2 }}>
                                                     <ListGroup>
@@ -667,8 +656,6 @@ const CreateTrainTest = (props) => {
                                                     </ListGroup>
                                                 </Col>
                                             </Row>
-
-                                        </CardText>
                                     </CardBody>
                                 </Card>
                             </CardDeck>
