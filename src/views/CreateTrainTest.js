@@ -2,6 +2,7 @@ import * as tf from '@tensorflow/tfjs';
 import * as tfvis from '@tensorflow/tfjs-vis';
 import React, { useState } from "react";
 import * as Papa from "papaparse";
+import { useWorker } from "@koale/useworker";
 import {
     Card,
     Container,
@@ -22,193 +23,17 @@ import {
 } from "reactstrap";
 
 
-const CreateTrainTest = (props) => {
 
-    const maxLength = 40; // Maximum number of words in a sentences, it's the same as the input of the model
+/**
+ * Process the file and store results in info
+ *
+ * @param data
+ *
+ * @return  Object with tokenizer, words, wordsTokenized and target
+ * @see
+ */
 
-    const noWordInLine = "NWIL"; // In sentences with less of "maxLength" words the remaining positions will be filled with this.
-
-    const vocalSize = 3000; // Maximum number of words used by tokenization, not all words in setences will be hear. 
-                            // If any word in the setence is not hear the return will be the token for "oovToken"   
-
-    const oovToken = "outofvocabulary";  // teh word is not in the words used for tokenization
-
-    const maxLines = 200000; //Maximum lines to process from the file
-
-    // list of stop words to remove of teh text
-    const stopWords = ['a', 'about', 'above', 'after', 'again', 'against', 'ain', 'all', 'am', 'an', 'and', 'any', 'are', 'aren', "aren't", 'as', 'at', 'b', 'be', 'because', 'been', 'before', 'being', 'below', 'between', 'both', 'but', 'by', 'c', 'can', 'couldn', "couldn't", 'd', 'did', 'didn', "didn't", 'do', 'does', 'doesn', "doesn't", 'doing', 'don', "don't", 'down', 'during', 'e', 'each', 'f', 'few', 'for', 'from', 'further', 'g', 'h', 'had', 'hadn', "hadn't", 'has', 'hasn', "hasn't", 'have', 'haven', "haven't", 'having', 'he', 'her', 'here', 'hers', 'herself', 'him', 'himself', 'his', 'how', 'i', 'if', 'in', 'into', 'is', 'isn', "isn't", 'it', "it's", 'its', 'itself', 'j', 'just', 'k', 'l', 'll', 'm', 'ma', 'me', 'mightn', "mightn't", 'more', 'most', 'mustn', "mustn't", 'my', 'myself', 'needn', "needn't", 'n', 'no', 'nor', 'not', 'now', 'o', 'of', 'off', 'on', 'once', 'only', 'or', 'other', 'our', 'ours', 'ourselves', 'out', 'over', 'own', 'p', 'q', 'r', 're', 's', 'same', 'shan', "shan't", 'she', "she's", 'should', "should've", 'shouldn', "shouldn't", 'so', 'some', 'such', 't', 'than', 'that', "that'll", 'the', 'their', 'theirs', 'them', 'themselves', 'then', 'there', 'these', 'they', 'this', 'those', 'through', 'to', 'too', 'u', 'under', 'until', 'up', 've', 'v', 'very', 'w', 'was', 'wasn', "wasn't", 'we', 'were', 'weren', "weren't", 'what', 'when', 'where', 'which', 'while', 'who', 'whom', 'why', 'will', 'with', 'won', "won't", 'wouldn', "wouldn't", 'y', 'you', "you'd", "you'll", "you're", "you've", 'your', 'yours', 'yourself', 'yourselves', 'x','z'];    // Information that we want to maintain 
-    
-    const [info, setInfo] = useState({
-        processing: {file:false, modelCreation:false, training: false, classification: false},
-        fileCsv: undefined, // Loaded file with the training data
-        data: undefined, // array with sentances x words used for training. Each element is a word. Each line is a sentance. 
-        dataTokenized: undefined,  // data Tokenized
-        target: undefined, // all the lables of the training data
-        tokenizer: undefined, // all words and tokens
-        model: undefined, // the prediction model
-        trained: false, // The model is already trained and ready for use
-        classifyText: '', // Text to classify as test
-        result: {toxic: undefined, severe_toxic: undefined,  obscene: undefined, threat: undefined, insult: undefined, identity_hate:undefined}
-    });
-
-
-    /**
-     * Get the data from the file and call function to precess it.
-     *
-     * @param file
-     * @param delimiter
-     *
-     * @return  nothing
-     * @see
-     */
-    async function getData(file, delimiter) {
-        Papa.parse(file, {
-            delimiter: delimiter,
-            worker: true,
-            header: true,
-            skipEmptyLines: true,
-            dynamicTyping: true,
-            complete: function (results) {
-                console.log("Finished:", results.data);
-                processFile(results.data);
-            }
-        });
-    }
-
-
-    /**
-     * Process the file and store results in info
-     *
-     * @param data
-     *
-     * @return  nothing
-     * @see
-     */
-
-    async function processFile(data) {
-
-        // If the data has more lines that the maximum allowed 
-        // the array is resized 
-        if (data.length > maxLines) {
-            data.length = maxLines;
-        }
-
-        // Get only the comment_text fild 
-        let sentences = data.map((item) => {
-            if (typeof item.comment_text === 'string' || item.comment_text instanceof String) {
-                return item.comment_text;
-            }
-            else {
-                return "";
-            }
-        });
-
-        // Change to lower case
-        sentences = sentences.map((str) => { return str.toLowerCase() });
-
-        
-        // Remove stop words and other characters
-        sentences = sentences.map((item) => {
-            return item.replace("\n", " ")
-                .replace("\\", " ")
-                .replace("\b", " ")
-                .replace("\f", " ")
-                .replace("\r", " ")
-                .replace("\t", " ")
-                .replace("'s", " ")
-                .replace("can't", " cannot ")
-                .replace("-", " ")
-                .replace("n't", " not ")
-                .replace("'scuse", " excuse ")
-                .replace(/[&/\\#,+=()$~%!|.":*?<>{}[\]\d]/ig, " ")
-                
-        });
-
-        console.log(sentences);
-
-        sentences = sentences.map((item) => {
-            return stopWords.reduce((acc, stopWord) => {
-                const regex = new RegExp("^\\s*" + stopWord + "\\s*$" +
-                                         "|^\\s*" + stopWord + "\\s+" +
-                                         "|\\s+" + stopWord + "\\s*$" +
-                                         "|\\s+" + stopWord + "\\s+", "ig");
-
-                return acc.replace(regex, " ");
-            }, item).replace(/\s+/g, " ")
-                    .trim();
-        });
-
-        console.log(sentences);
-
-        // Convert sentences to words
-        const words = sentences.map((item) => { return resize(item.split(" "), maxLength, noWordInLine) });
-
-
-        console.log(words);
-
-        // Create array with all words and id as token and add "noWordInLine"
-
-        let tokenizer = words.flat();
-
-        console.log('after flat');
-        
-        tokenizer = tokenizer.reduce((acc, el) => { 
-            const x = acc.find(obj => obj.word === el); 
-            if (x){ 
-                x.ct = x.ct + 1;
-             } 
-             else{
-                 acc.push({ct: 1, word: el})
-             } 
-             return acc;
-         }, [{ ct: vocalSize*100+1, word: noWordInLine }, 
-             { ct: vocalSize*100, word: oovToken }]);
-        
-        console.log('after reduce');
-                  
-        tokenizer = tokenizer.sort((a,b) =>{return b.ct - a.ct;});
-
-        console.log('after sort');
-
-        tokenizer = tokenizer.map((el, ind) => {return { ct: el.ct, token: ind, word: el.word }});
-
-        console.log('after map');
-
-        // Resize the array to has a maximum size "vocalSize"
-        if (tokenizer.length > vocalSize) {
-            tokenizer.length = vocalSize;
-        }
-
-        // Convert works to respective token
-        const wordsTokenized = words.map(
-            (sent) => {
-                return sent.map(
-                    (item) => {
-                        const retItem = tokenizer.find((i) => { return i.word === item; });
-                        return (retItem ? retItem.token : 1);
-                    })
-            });
-
-
-        // Get the lables and create a training output vector
-        const target = data.map((item) => {
-            return [item.identity_hate,
-            item.insult,
-            item.obscene,
-            item.severe_toxic,
-            item.threat,
-            item.toxic];
-        });
-
-        // Store all information in "info" variable. 
-        setInfo({ ...info, tokenizer: tokenizer, 
-                           data: words, 
-                           dataTokenized: wordsTokenized, 
-                           target: target,
-                           processing: {...info.processing, file: false} });
-
-        alert("File processing concluded!!");
-    }
+async function processFile(data, maxLines, stopWords, maxLength, noWordInLine, vocalSize, oovToken) {
 
     /**
      * Resize a array to a new size and put a default values in the new possitions 
@@ -229,6 +54,233 @@ const CreateTrainTest = (props) => {
         }
 
     }
+
+
+    // If the data has more lines that the maximum allowed 
+    // the array is resized 
+    if (data.length > maxLines) {
+        data.length = maxLines;
+    }
+
+    // Get only the comment_text fild 
+    let sentences = data.map((item) => {
+        if (typeof item.comment_text === 'string' || item.comment_text instanceof String) {
+            return item.comment_text;
+        }
+        else {
+            return "";
+        }
+    });
+
+    // Change to lower case
+    sentences = sentences.map((str) => { return str.toLowerCase() });
+
+    
+    // Remove stop words and other characters
+    sentences = sentences.map((item) => {
+        return item.replace("\n", " ")
+            .replace("\\", " ")
+            .replace("\b", " ")
+            .replace("\f", " ")
+            .replace("\r", " ")
+            .replace("\t", " ")
+            .replace("'s", " ")
+            .replace("can't", " cannot ")
+            .replace("-", " ")
+            .replace("n't", " not ")
+            .replace("'scuse", " excuse ")
+            .replace(/[&/\\#,+=()$~%!|.":*?<>{}[\]\d]/ig, " ")
+            
+    });
+
+    console.log(sentences);
+
+    sentences = sentences.map((item) => {
+        return stopWords.reduce((acc, stopWord) => {
+            const regex = new RegExp("^\\s*" + stopWord + "\\s*$" +
+                                        "|^\\s*" + stopWord + "\\s+" +
+                                        "|\\s+" + stopWord + "\\s*$" +
+                                        "|\\s+" + stopWord + "\\s+", "ig");
+                                        
+            
+            return acc.replace(regex, " ");
+        }, item).replace(/\s+/g, " ")
+                .trim();
+    });
+
+    console.log(sentences);
+
+    // Convert sentences to words
+    const words = sentences.map((item) => { return resize(item.split(" "), maxLength, noWordInLine) });
+
+
+    console.log(words);
+
+    // Create array with all words and id as token and add "noWordInLine"
+
+    let tokenizer = words.flat();
+
+    console.log('after flat');
+    
+    tokenizer = tokenizer.reduce((acc, el) => { 
+        const x = acc.find(obj => obj.word === el); 
+        if (x){ 
+            x.ct = x.ct + 1;
+            } 
+            else{
+                acc.push({ct: 1, word: el})
+            } 
+            return acc;
+        }, [{ ct: vocalSize*100+1, word: noWordInLine }, 
+            { ct: vocalSize*100, word: oovToken }]);
+    
+    console.log('after reduce');
+                
+    tokenizer = tokenizer.sort((a,b) =>{return b.ct - a.ct;});
+
+    console.log('after sort');
+
+    tokenizer = tokenizer.map((el, ind) => {return { ct: el.ct, token: ind, word: el.word }});
+
+    console.log('after map');
+
+    // Resize the array to has a maximum size "vocalSize"
+    if (tokenizer.length > vocalSize) {
+        tokenizer.length = vocalSize;
+    }
+
+    // Convert works to respective token
+    const wordsTokenized = words.map(
+        (sent) => {
+            return sent.map(
+                (item) => {
+                    const retItem = tokenizer.find((i) => { return i.word === item; });
+                    return (retItem ? retItem.token : 1);
+                })
+        });
+
+
+    // Get the lables and create a training output vector
+    const target = data.map((item) => {
+        return [item.identity_hate,
+        item.insult,
+        item.obscene,
+        item.severe_toxic,
+        item.threat,
+        item.toxic];
+    });
+
+
+    return {tokenizer: tokenizer, 
+            words: words, 
+            dataTokenized: wordsTokenized, 
+            target: target}
+}
+
+
+const CreateTrainTest = (props) => {
+
+    const maxLength = 40; // Maximum number of words in a sentences, it's the same as the input of the model
+
+    const noWordInLine = "NWIL"; // In sentences with less of "maxLength" words the remaining positions will be filled with this.
+
+    const vocalSize = 3000; // Maximum number of words used by tokenization, not all words in setences will be hear. 
+                            // If any word in the setence is not hear the return will be the token for "oovToken"   
+
+    const oovToken = "outofvocabulary";  // teh word is not in the words used for tokenization
+
+    const maxLines = 200000; //Maximum lines to process from the file
+
+    // list of stop words to remove of teh text
+    const stopWords = ['a', 'about', 'above', 'after', 'again', 'against', 'ain', 'all', 'am', 'an', 'and', 'any', 'are', 'aren', "aren't", 'as', 'at', 'b', 'be', 'because', 'been', 'before', 'being', 'below', 'between', 'both', 'but', 'by', 'c', 'can', 'couldn', "couldn't", 'd', 'did', 'didn', "didn't", 'do', 'does', 'doesn', "doesn't", 'doing', 'don', "don't", 'down', 'during', 'e', 'each', 'f', 'few', 'for', 'from', 'further', 'g', 'h', 'had', 'hadn', "hadn't", 'has', 'hasn', "hasn't", 'have', 'haven', "haven't", 'having', 'he', 'her', 'here', 'hers', 'herself', 'him', 'himself', 'his', 'how', 'i', 'if', 'in', 'into', 'is', 'isn', "isn't", 'it', "it's", 'its', 'itself', 'j', 'just', 'k', 'l', 'll', 'm', 'ma', 'me', 'mightn', "mightn't", 'more', 'most', 'mustn', "mustn't", 'my', 'myself', 'needn', "needn't", 'n', 'no', 'nor', 'not', 'now', 'o', 'of', 'off', 'on', 'once', 'only', 'or', 'other', 'our', 'ours', 'ourselves', 'out', 'over', 'own', 'p', 'q', 'r', 're', 's', 'same', 'shan', "shan't", 'she', "she's", 'should', "should've", 'shouldn', "shouldn't", 'so', 'some', 'such', 't', 'than', 'that', "that'll", 'the', 'their', 'theirs', 'them', 'themselves', 'then', 'there', 'these', 'they', 'this', 'those', 'through', 'to', 'too', 'u', 'under', 'until', 'up', 've', 'v', 'very', 'w', 'was', 'wasn', "wasn't", 'we', 'were', 'weren', "weren't", 'what', 'when', 'where', 'which', 'while', 'who', 'whom', 'why', 'will', 'with', 'won', "won't", 'wouldn', "wouldn't", 'y', 'you', "you'd", "you'll", "you're", "you've", 'your', 'yours', 'yourself', 'yourselves', 'x','z'];    // Information that we want to maintain 
+
+    const [progress, setProgress] = useState({stage: undefined, count:0})
+
+
+    const [processing, setProcessing] = useState({file:false, 
+                                                  modelCreation:false, 
+                                                  training: false, 
+                                                  classification: false});
+
+    const [info, setInfo] = useState({
+        fileCsv: undefined, // Loaded file with the training data
+        data: undefined, // array with sentances x words used for training. Each element is a word. Each line is a sentance. 
+        dataTokenized: undefined,  // data Tokenized
+        target: undefined, // all the lables of the training data
+        tokenizer: undefined, // all words and tokens
+        model: undefined, // the prediction model
+        trained: false, // The model is already trained and ready for use
+        classifyText: '', // Text to classify as test
+        result: {toxic: undefined, severe_toxic: undefined,  obscene: undefined, threat: undefined, insult: undefined, identity_hate:undefined}
+    });
+
+    
+    const [getProcessFileWorker] = useWorker(processFile);
+
+      /**
+     * Function to call the file read and start the worker to process the data
+     *
+     * @param file
+     * @param delimiter
+     *
+     * @return  nothing
+     * @see
+     */
+    const runGetData = async (file, separator) => {
+        
+        //Open the file and read the information
+        const data = await getData(file, separator)
+
+        //Call teh worker to process teh data
+        const processedData = await getProcessFileWorker(data, maxLines, stopWords, maxLength, noWordInLine, vocalSize, oovToken); 
+        console.log("End.");
+
+
+        
+
+        alert("File processing concluded!!");
+        console.log(processedData);
+
+        // Store all information in "info" variable. 
+        setInfo({ ...info, tokenizer: processedData.tokenizer, 
+            data: processedData.words, 
+            dataTokenized: processedData.dataTokenized, 
+            target: processedData.target});
+
+        // Set that finish teh file processing
+        setProcessing({...processing, file: false})
+      };
+
+      /**
+     * Get the data from the file and call function to precess it.
+     *
+     * @param file
+     * @param delimiter
+     *
+     * @return  file data
+     * @see
+     */
+    async function getData(file, delimiter) {
+        const parseFile = (file, delimiter) => {
+            return new Promise(resolve => {
+                Papa.parse(file, {
+                    delimiter: delimiter,
+                    worker: true,
+                    header: true,
+                    skipEmptyLines: true,
+                    dynamicTyping: true,
+                    complete: results => {
+                        console.log("Finished:", results.data);
+                        resolve(results.data);
+                    }
+                });
+            });
+        };
+
+        let data = await parseFile(file, delimiter);
+        return data;
+    }
+
 
     /**
      * Function to create the model that will be used 
@@ -294,7 +346,7 @@ const CreateTrainTest = (props) => {
         console.log(info.dataTokenized);
         console.log(info);
 
-        setInfo({...info, processing: {...info.processing, training: true} });
+        setProcessing({...processing, training: true} )
 
         const inputTensor = tf.tensor2d(info.dataTokenized, [info.dataTokenized.length, maxLength]);
         inputTensor.print();
@@ -321,7 +373,8 @@ const CreateTrainTest = (props) => {
             }}),
             new tf.CustomCallback({onTrainEnd: (logs) => {
                 console.log('onTrainEnd:' );
-                setInfo({...info, trained: true, processing: {...info.processing, training: false} });
+                setInfo({...info, trained: true});
+                setProcessing({...processing, training: false})
                 alert("Trainning concluded!!");
             }})
         ];
@@ -345,6 +398,26 @@ const CreateTrainTest = (props) => {
      * @see
      */
     async function classify(){
+
+        /**
+         * Resize a array to a new size and put a default values in the new possitions 
+         *
+         * @param arr array to resize
+         * @param newSize new size of the array
+         * @param defaultValue value to put in the new positions  
+         *
+         * @return  new resized array 
+         * @see
+         */
+        function resize(arr, newSize, defaultValue) {
+            if (newSize > arr.length)
+                return [...arr, ...Array(Math.max(newSize - arr.length, 0)).fill(defaultValue)];
+            else {
+                arr.length = newSize;
+                return arr;
+            }
+
+        }
 
         //Transform data
 
@@ -437,8 +510,8 @@ const CreateTrainTest = (props) => {
      * @see
      */
     async function handleLoadFile() {
-        setInfo({...info, processing: {...info.processing, file: true}});
-        getData(info.fileCsv, ',');
+        setProcessing({...processing, file: true})
+        const processedData = runGetData(info.fileCsv, ',');
     }
 
     /**
@@ -522,11 +595,11 @@ const CreateTrainTest = (props) => {
                                                                 type="button"
                                                                 onClick={() => handleLoadFile()}>
                                                                 <span className="btn-inner--icon mr-0">
-                                                                    <i className="fas fa-binoculars"></i>
+                                                                    <i className="fas fa-upload"></i>
                                                                 </span>
                                                                 <span className="btn-inner--text d-none d-lg-inline"> 
-                                                                {!info.processing.file ? " Load File" : " Loading.."}</span>
-                                                                {info.processing.file ? (
+                                                                {!processing.file ? " Load File" : " Loading.."}</span>
+                                                                {processing.file ? (
                                                                     <Spinner
                                                                     style={{ width: "0.7rem", height: "0.7rem" }}
                                                                     type="grow"
@@ -537,6 +610,7 @@ const CreateTrainTest = (props) => {
                                                         </FormGroup>
                                                     </Col>
                                                 </Row>
+                                                {progress?<Row>{progress.stage}: {progress.count}</Row>:<></>}
                                                 <Row>
                                                     <Table striped responsive size="sm"><thead>{printTableHeader5Lines(info.data)}</thead><tbody>{printTable5Lines(info.data)}</tbody></Table>
                                                     <Table striped responsive size="sm"><thead>{printTableHeader5Lines(info.dataTokenized)}</thead><tbody>{printTable5Lines(info.dataTokenized)}</tbody></Table>
@@ -587,8 +661,8 @@ const CreateTrainTest = (props) => {
                                                                 <i className="fas fa-dumbbell"></i>
                                                             </span>
                                                             <span className="btn-inner--text d-none d-lg-inline">
-                                                            {!info.processing.training ? " Train Model" : " Training.."}</span>
-                                                                {info.processing.training ? (
+                                                            {!processing.training ? " Train Model" : " Training.."}</span>
+                                                                {processing.training ? (
                                                                     <Spinner
                                                                     style={{ width: "0.7rem", height: "0.7rem" }}
                                                                     type="grow"
