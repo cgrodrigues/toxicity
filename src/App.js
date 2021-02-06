@@ -15,15 +15,15 @@ function App() {
       <BrowserRouter>
         <div>
           <Navbar color="light" light expand="md">
-            <NavbarBrand to="/toxicity">Toxicity</NavbarBrand>
+            <NavbarBrand href="/toxicity">Toxicity</NavbarBrand>
             <NavbarToggler onClick={toggle} />
             <Collapse isOpen={isOpen} navbar>
               <Nav className="mr-auto" navbar>
                 <NavItem>
-                  <NavLink to="/toxicity">Pre-Trained Model</NavLink>
+                  <NavLink href="/toxicity">Pre-Trained Model</NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink to="/toxicity/create_train_test">Create Train & Test</NavLink>
+                  <NavLink href="/toxicity/create_train_test">Create Train & Test</NavLink>
                 </NavItem>
               </Nav>
               <NavbarText>Toxic comment classification using Tensorflow and React.js</NavbarText>
