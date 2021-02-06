@@ -23,14 +23,14 @@ function App() {
                   <NavLink href="/toxicity">Pre-Trained Model</NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink href="/toxicity/CreateTrainTest">Create Train & Test</NavLink>
+                  <NavLink href="/toxicity/create_train_test">Create Train & Test</NavLink>
                 </NavItem>
               </Nav>
               <NavbarText>Toxic comment classification using Tensorflow and React.js</NavbarText>
             </Collapse>
           </Navbar>
           <Switch>
-            <Route path="/toxicity/CreateTrainTest" component={props => <CreateTrainTest />} />
+            <Route path="/toxicity/create_train_test" component={props => <CreateTrainTest />} />
             <Route path="/toxicity" component={props => <PreTrainedModel />} />
           </Switch>
         </div>
