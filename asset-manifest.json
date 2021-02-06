@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.js": "/toxicity/static/js/main.6dae3083.chunk.js",
-    "main.js.map": "/toxicity/static/js/main.6dae3083.chunk.js.map",
-    "runtime-main.js": "/toxicity/static/js/runtime-main.38b7200d.js",
-    "runtime-main.js.map": "/toxicity/static/js/runtime-main.38b7200d.js.map",
+    "main.js": "/toxicity/static/js/main.a8eb198d.chunk.js",
+    "main.js.map": "/toxicity/static/js/main.a8eb198d.chunk.js.map",
+    "runtime-main.js": "/toxicity/static/js/runtime-main.42b52906.js",
+    "runtime-main.js.map": "/toxicity/static/js/runtime-main.42b52906.js.map",
     "static/css/2.150d169a.chunk.css": "/toxicity/static/css/2.150d169a.chunk.css",
-    "static/js/2.7093d808.chunk.js": "/toxicity/static/js/2.7093d808.chunk.js",
-    "static/js/2.7093d808.chunk.js.map": "/toxicity/static/js/2.7093d808.chunk.js.map",
-    "static/js/3.85063c08.chunk.js": "/toxicity/static/js/3.85063c08.chunk.js",
-    "static/js/3.85063c08.chunk.js.map": "/toxicity/static/js/3.85063c08.chunk.js.map",
+    "static/js/2.a0b06164.chunk.js": "/toxicity/static/js/2.a0b06164.chunk.js",
+    "static/js/2.a0b06164.chunk.js.map": "/toxicity/static/js/2.a0b06164.chunk.js.map",
+    "static/js/3.5f9b9eda.chunk.js": "/toxicity/static/js/3.5f9b9eda.chunk.js",
+    "static/js/3.5f9b9eda.chunk.js.map": "/toxicity/static/js/3.5f9b9eda.chunk.js.map",
     "index.html": "/toxicity/index.html",
     "static/css/2.150d169a.chunk.css.map": "/toxicity/static/css/2.150d169a.chunk.css.map",
-    "static/js/2.7093d808.chunk.js.LICENSE.txt": "/toxicity/static/js/2.7093d808.chunk.js.LICENSE.txt"
+    "static/js/2.a0b06164.chunk.js.LICENSE.txt": "/toxicity/static/js/2.a0b06164.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.38b7200d.js",
+    "static/js/runtime-main.42b52906.js",
     "static/css/2.150d169a.chunk.css",
-    "static/js/2.7093d808.chunk.js",
-    "static/js/main.6dae3083.chunk.js"
+    "static/js/2.a0b06164.chunk.js",
+    "static/js/main.a8eb198d.chunk.js"
   ]
 }
