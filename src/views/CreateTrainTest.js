@@ -235,9 +235,6 @@ const CreateTrainTest = (props) => {
         const processedData = await getProcessFileWorker(data, maxLines, stopWords, maxLength, noWordInLine, vocalSize, oovToken); 
         console.log("End.");
 
-
-        
-
         alert("File processing concluded!!");
         console.log(processedData);
 
@@ -593,6 +590,7 @@ const CreateTrainTest = (props) => {
                                                             <Button className="btn-icon"
                                                                 color="primary"
                                                                 type="button"
+                                                                disabled={!info.fileCsv}
                                                                 onClick={() => handleLoadFile()}>
                                                                 <span className="btn-inner--icon mr-0">
                                                                     <i className="fas fa-upload"></i>
