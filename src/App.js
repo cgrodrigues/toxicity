@@ -10,7 +10,7 @@ function App() {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
 
-  const routerBaseName = "https://cgrodrigues.github.io/toxicity";
+  const routerBaseName = "/toxicity";
 
   return (
     <div className="App">
