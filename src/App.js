@@ -10,29 +10,31 @@ function App() {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
 
+  const routerBaseName = "https://cgrodrigues.github.io/toxicity";
+
   return (
     <div className="App">
-      <BrowserRouter>
+      <BrowserRouter basename={routerBaseName}>
         <div>
           <Navbar color="light" light expand="md">
-            <NavbarBrand href="/toxicity">Toxicity</NavbarBrand>
+            <NavbarBrand href="/">Toxicity</NavbarBrand>
             <NavbarToggler onClick={toggle} />
             <Collapse isOpen={isOpen} navbar>
               <Nav className="mr-auto" navbar>
                 <NavItem>
-                  <NavLink exact to="/toxicity" activeStyle={{color: 'red'}} className="nav-link">Pre-Trained Model</NavLink>
+                  <NavLink exact to="/" activeStyle={{color: 'red'}} className="nav-link">Pre-Trained Model</NavLink>
                 </NavItem>
                 <NavItem>&nbsp;</NavItem>
                 <NavItem>
-                  <NavLink exact to="/toxicity/create_train_test" activeStyle={{color: 'red'}} className="nav-link">Create Train & Test</NavLink>
+                  <NavLink exact to="/create_train_test" activeStyle={{color: 'red'}} className="nav-link">Create Train & Test</NavLink>
                 </NavItem>
               </Nav>
               <NavbarText>Toxic comment classification using Tensorflow and React.js</NavbarText>
             </Collapse>
           </Navbar>
           <Switch>
-            <Route path="/toxicity/create_train_test" component={props => <CreateTrainTest />} />
-            <Route path="/toxicity" component={props => <PreTrainedModel />} />
+            <Route path="/create_train_test" component={props => <CreateTrainTest />} />
+            <Route path="/" component={props => <PreTrainedModel />} />
           </Switch>
         </div>
       </BrowserRouter>
