@@ -232,6 +232,7 @@ const CreateTrainTest = (props) => {
         const data = await getData(file, separator)
 
         //Call teh worker to process teh data
+        console.log("begin");
         const processedData = await getProcessFileWorker(data, maxLines, stopWords, maxLength, noWordInLine, vocalSize, oovToken); 
         console.log("End.");
 
@@ -508,7 +509,7 @@ const CreateTrainTest = (props) => {
      */
     async function handleLoadFile() {
         setProcessing({...processing, file: true})
-        const processedData = runGetData(info.fileCsv, ',');
+        runGetData(info.fileCsv, ',');
     }
 
     /**
