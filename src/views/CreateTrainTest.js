@@ -341,10 +341,7 @@ const CreateTrainTest = (props) => {
     async function trainModel() {
 
         // Convert the input and label data to Tensors
-        console.log(info.dataTokenized);
         console.log(info);
-
-        setProcessing({...processing, training: true} )
 
         const inputTensor = tf.tensor2d(info.dataTokenized, [info.dataTokenized.length, maxLength]);
         inputTensor.print();
@@ -513,6 +510,30 @@ const CreateTrainTest = (props) => {
     }
 
     /**
+     * Function called by the training model buttom  
+     *
+     * @return  nothing 
+     * @see
+     */
+    async function handleTrainingModel() {
+        setProcessing({...processing, training: true} )
+        trainModel();
+    }
+
+    /**
+     * Function called by the create model buttom  
+     *
+     * @return  nothing 
+     * @see
+     */
+    async function handleCreateModel() {
+        createModel()
+    }
+
+
+
+
+    /**
      * Function called by the file loader component  
      *
      * @return  nothing 
@@ -629,7 +650,7 @@ const CreateTrainTest = (props) => {
                                                                 className="btn-icon"
                                                                 color="primary"
                                                                 type="button"
-                                                                onClick={() => createModel()}>
+                                                                onClick={() => handleCreateModel()}>
                                                                 <span className="btn-inner--icon mr-0">
                                                                     <i className="fas fa-plus-circle"></i>
                                                                 </span>
@@ -655,7 +676,7 @@ const CreateTrainTest = (props) => {
                                                             className="btn-icon"
                                                             color="primary"
                                                             type="button"
-                                                            onClick={() => trainModel()}>
+                                                            onClick={() => handleTrainingModel()}>
                                                             <span className="btn-inner--icon mr-0">
                                                                 <i className="fas fa-dumbbell"></i>
                                                             </span>
