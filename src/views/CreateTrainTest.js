@@ -259,7 +259,7 @@ const CreateTrainTest = (props) => {
      * @see
      */
     async function getData(file, delimiter) {
-        const parseFile = (file, delimiter) => {
+        const parseFile = async (file, delimiter) => {
             return new Promise(resolve => {
                 Papa.parse(file, {
                     delimiter: delimiter,
