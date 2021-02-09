@@ -512,7 +512,7 @@ const CreateTrainTest = (props) => {
                                 <Card>
                                     <CardHeader><i className="fas fa-upload"></i> 1 - Load & Process Data</CardHeader>
                                     <CardBody>
-                                        <CardSubtitle className="mb-2 text-muted">Load data from file and transform in tensors to use in a prediction model training and validation.</CardSubtitle>
+                                        <CardSubtitle className="mb-2 text-muted">Load data from file and transform in tensors to use in a prediction model training and validation.<p>Download training data <a href="/training-data/train.zip">here</a></p></CardSubtitle>
                                             <Col>
                                                 <Row>
                                                     <Col>
