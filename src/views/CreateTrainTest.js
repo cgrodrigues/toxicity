@@ -37,9 +37,13 @@ const CreateTrainTest = (props) => {
     const initVocalSize = 3000; // Maximum number of words used by tokenization, not all words in setences will be hear. 
                             // If any word in the setence is not hear the return will be the token for "oovToken"   
 
-    const oovToken = "outofvocabulary";  // teh word is not in the words used for tokenization
+    const oovToken = "outofvocabulary";  // the word is not in the words used for tokenization
 
     const maxLines = 200000; //Maximum lines to process from the file
+
+    const initBatchSize = 32;
+    const initEpochs = 5;
+
 
     // list of stop words to remove of teh text
     const initialStopWords = ['a', 'about', 'above', 'after', 'again', 'against', 'ain', 'all', 'am', 'an', 'and', 'any', 'are', 'aren', "aren't", 'as', 'at', 'b', 'be', 'because', 'been', 'before', 'being', 'below', 'between', 'both', 'but', 'by', 'c', 'can', 'couldn', "couldn't", 'd', 'did', 'didn', "didn't", 'do', 'does', 'doesn', "doesn't", 'doing', 'don', "don't", 'down', 'during', 'e', 'each', 'f', 'few', 'for', 'from', 'further', 'g', 'h', 'had', 'hadn', "hadn't", 'has', 'hasn', "hasn't", 'have', 'haven', "haven't", 'having', 'he', 'her', 'here', 'hers', 'herself', 'him', 'himself', 'his', 'how', 'i', 'if', 'in', 'into', 'is', 'isn', "isn't", 'it', "it's", 'its', 'itself', 'j', 'just', 'k', 'l', 'll', 'm', 'ma', 'me', 'mightn', "mightn't", 'more', 'most', 'mustn', "mustn't", 'my', 'myself', 'needn', "needn't", 'n', 'no', 'nor', 'not', 'now', 'o', 'of', 'off', 'on', 'once', 'only', 'or', 'other', 'our', 'ours', 'ourselves', 'out', 'over', 'own', 'p', 'q', 'r', 're', 's', 'same', 'shan', "shan't", 'she', "she's", 'should', "should've", 'shouldn', "shouldn't", 'so', 'some', 'such', 't', 'than', 'that', "that'll", 'the', 'their', 'theirs', 'them', 'themselves', 'then', 'there', 'these', 'they', 'this', 'those', 'through', 'to', 'too', 'u', 'under', 'until', 'up', 've', 'v', 'very', 'w', 'was', 'wasn', "wasn't", 'we', 'were', 'weren', "weren't", 'what', 'when', 'where', 'which', 'while', 'who', 'whom', 'why', 'will', 'with', 'won', "won't", 'wouldn', "wouldn't", 'y', 'you', "you'd", "you'll", "you're", "you've", 'your', 'yours', 'yourself', 'yourselves', 'x','z'];    // Information that we want to maintain 
@@ -68,6 +72,8 @@ const CreateTrainTest = (props) => {
     const [stopWords, setStopWords] = useState(initialStopWords);
     const [maxLength, setMaxLength] = useState(initMaxLength);
     const [vocalSize, setVocalSize] = useState(initVocalSize);
+    const [epochs, setEpochs] = useState(initEpochs);
+    const [batchSize, setBatchSize] = useState(initBatchSize);
 
     
     //const [getProcessFileWorker] = useWorker(processFile);
@@ -258,8 +264,8 @@ const CreateTrainTest = (props) => {
 
         // Train the model
         info.model.fit(inputTensor, labelTensor, {
-            batchSize: 32, //500, //32,
-            epochs: 5,
+            batchSize: batchSize, //32, //500, //32,
+            epochs: epochs, //5
             shuffle: true,
             callbacks: cBack,
             validationSplit: 0.20
@@ -553,6 +559,26 @@ const CreateTrainTest = (props) => {
             info.tokenizer);
     }
 
+    /**
+     * Function called by the Download Model button 
+     *
+     * @return  nothing 
+     * @see
+     */
+    function handleBatchSize(event) {
+        setBatchSize(event.target.value);
+    }
+
+        /**
+     * Function called by the Download Model button 
+     *
+     * @return  nothing 
+     * @see
+     */
+    function handleEpochs(event) {
+        setEpochs(event.target.value);
+    }
+
 
 
     //Print header table
@@ -636,9 +662,11 @@ const CreateTrainTest = (props) => {
                                                         className="form-control-label"
                                                         htmlFor="list-stop-words">
                                                         List stop words to remove
-                                                        <i href="#"  id="list-stop-words-info-icon" className="fas fa-info-circle ml-1" />
+                                                        <span href="#" id="list-stop-words-info-icon">
+                                                            <i className="fas fa-info-circle ml-1" />
+                                                        </span>
                                                         <UncontrolledTooltip delay={0} placement="right" target="list-stop-words-info-icon">
-                                                            ...
+                                                        Words that do not contribute to the meaning of the sentence and will be removed.
                                                         </UncontrolledTooltip>
                                                     </label>
                                                     <Input
@@ -658,9 +686,11 @@ const CreateTrainTest = (props) => {
                                                         <FormGroup>
                                                             <label className="form-control-label" htmlFor="number-of-words-select">
                                                                 Number of words in a sentences
-                                                                <i href="#" id="number-of-words-info-icon" className="fas fa-info-circle ml-1" />
+                                                                <span href="#" id="number-of-words-info-icon">
+                                                                    <i className="fas fa-info-circle ml-1" />
+                                                                </span>
                                                                 <UncontrolledTooltip delay={0} placement="right" target="number-of-words-info-icon">
-                                                                    ...
+                                                                    Number of words in each setence that will be use as model input. Senteces with more words will be truncated. Sentence with less will be padded with 'NWIL'.   
                                                                 </UncontrolledTooltip>
                                                             </label>
 
@@ -673,15 +703,15 @@ const CreateTrainTest = (props) => {
                                                                 onChange={e => handleMaxLength(e)}/>
                                                         </FormGroup>
                                                     </Col>
-                                                </Row>
-                                                <Row>
                                                     <Col>
                                                         <FormGroup>
                                                             <label className="form-control-label" htmlFor="vocal-size">
                                                                 Number of words used as token
-                                                                <i href="#" id="vocal-size-icon" className="fas fa-info-circle ml-1" />
+                                                                <span href="#" id="vocal-size-icon">
+                                                                    <i className="fas fa-info-circle ml-1" />
+                                                                </span>
                                                                 <UncontrolledTooltip delay={0} placement="right" target="vocal-size-icon">
-                                                                    ...
+                                                                    Size of the different words used in the model 
                                                                 </UncontrolledTooltip>
                                                             </label>
 
@@ -695,7 +725,52 @@ const CreateTrainTest = (props) => {
                                                         </FormGroup>
                                                     </Col>
                                                 </Row>
-                                                {progress?<Row>{progress.stage}: {progress.count}</Row>:<></>}
+                                                <Row>
+                                                    <Col>
+                                                        <FormGroup>
+                                                            <label className="form-control-label" htmlFor="batch-size">
+                                                                Batch Size
+                                                                <span href="#" id="batch-size-icon">
+                                                                    <i className="fas fa-info-circle ml-1" />
+                                                                </span>
+                                                                <UncontrolledTooltip delay={0} placement="right" target="batch-size-icon">
+                                                                Number of processed records before updated the model’s internal parameters.
+                                                                </UncontrolledTooltip>
+                                                            </label>
+
+                                                            <Input id="batch-size"
+                                                                name="batch-size"
+                                                                min={10} max={40}
+                                                                type="number"
+                                                                step="1"
+                                                                value={batchSize}
+                                                                onChange={e => handleBatchSize(e)}/>
+                                                        </FormGroup>
+                                                    </Col>
+                                                    <Col>
+                                                        <FormGroup>
+                                                            <label className="form-control-label" htmlFor="epochs">
+                                                                
+                                                                Epochs
+                                                                <span href="#" id="epochs-icon">
+                                                                    <i className="fas fa-info-circle ml-1" />
+                                                                </span>
+                                                                <UncontrolledTooltip delay={0} placement="right" target="epochs-icon">
+                                                                Number of times the dataset is used to train the model.
+                                                                </UncontrolledTooltip>
+                                                            </label>
+
+                                                            <Input id="epochs"
+                                                                name="epochs"
+                                                                min={10} max={40}
+                                                                type="number"
+                                                                step="1"
+                                                                value={epochs}
+                                                                onChange={e => handleEpochs(e)}/>
+                                                        </FormGroup>
+                                                    </Col>
+                                                </Row>
+                                                
                                                 <Row>
                                                     <Table striped responsive size="sm"><thead>{printTableHeader5Lines(info.data)}</thead><tbody>{printTable5Lines(info.data)}</tbody></Table>
                                                     <Table striped responsive size="sm"><thead>{printTableHeader5Lines(info.dataTokenized)}</thead><tbody>{printTable5Lines(info.dataTokenized)}</tbody></Table>
