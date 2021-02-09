@@ -3,8 +3,11 @@ const Footer = () => {
     return (
         <footer className="bg-light text-center text-lg-start">
             <div className="text-center p-3">
-                xxxxx
-                <a className="text-dark" href="xxx">x</a>
+                The MIT License (MIT)
+                <br></br>
+                Copyright (&copy;) 2021 Carlos Rodrigues
+                <br></br>
+                <a className="text-dark" href="https://github.com/cgrodrigues/toxicity">https://github.com/cgrodrigues/toxicity</a>
             </div>
         </footer>
     )
