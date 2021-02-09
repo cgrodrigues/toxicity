@@ -35,7 +35,7 @@ const CreateTrainTest = (props) => {
     const noWordInLine = "NWIL"; // In sentences with less of "maxLength" words the remaining positions will be filled with this.
 
     const initVocalSize = 3000; // Maximum number of words used by tokenization, not all words in setences will be hear. 
-                            // If any word in the setence is not hear the return will be the token for "oovToken"   
+    // If any word in the setence is not hear the return will be the token for "oovToken"   
 
     const oovToken = "outofvocabulary";  // the word is not in the words used for tokenization
 
@@ -46,15 +46,17 @@ const CreateTrainTest = (props) => {
 
 
     // list of stop words to remove of teh text
-    const initialStopWords = ['a', 'about', 'above', 'after', 'again', 'against', 'ain', 'all', 'am', 'an', 'and', 'any', 'are', 'aren', "aren't", 'as', 'at', 'b', 'be', 'because', 'been', 'before', 'being', 'below', 'between', 'both', 'but', 'by', 'c', 'can', 'couldn', "couldn't", 'd', 'did', 'didn', "didn't", 'do', 'does', 'doesn', "doesn't", 'doing', 'don', "don't", 'down', 'during', 'e', 'each', 'f', 'few', 'for', 'from', 'further', 'g', 'h', 'had', 'hadn', "hadn't", 'has', 'hasn', "hasn't", 'have', 'haven', "haven't", 'having', 'he', 'her', 'here', 'hers', 'herself', 'him', 'himself', 'his', 'how', 'i', 'if', 'in', 'into', 'is', 'isn', "isn't", 'it', "it's", 'its', 'itself', 'j', 'just', 'k', 'l', 'll', 'm', 'ma', 'me', 'mightn', "mightn't", 'more', 'most', 'mustn', "mustn't", 'my', 'myself', 'needn', "needn't", 'n', 'no', 'nor', 'not', 'now', 'o', 'of', 'off', 'on', 'once', 'only', 'or', 'other', 'our', 'ours', 'ourselves', 'out', 'over', 'own', 'p', 'q', 'r', 're', 's', 'same', 'shan', "shan't", 'she', "she's", 'should', "should've", 'shouldn', "shouldn't", 'so', 'some', 'such', 't', 'than', 'that', "that'll", 'the', 'their', 'theirs', 'them', 'themselves', 'then', 'there', 'these', 'they', 'this', 'those', 'through', 'to', 'too', 'u', 'under', 'until', 'up', 've', 'v', 'very', 'w', 'was', 'wasn', "wasn't", 'we', 'were', 'weren', "weren't", 'what', 'when', 'where', 'which', 'while', 'who', 'whom', 'why', 'will', 'with', 'won', "won't", 'wouldn', "wouldn't", 'y', 'you', "you'd", "you'll", "you're", "you've", 'your', 'yours', 'yourself', 'yourselves', 'x','z'];    // Information that we want to maintain 
+    const initialStopWords = ['a', 'about', 'above', 'after', 'again', 'against', 'ain', 'all', 'am', 'an', 'and', 'any', 'are', 'aren', "aren't", 'as', 'at', 'b', 'be', 'because', 'been', 'before', 'being', 'below', 'between', 'both', 'but', 'by', 'c', 'can', 'couldn', "couldn't", 'd', 'did', 'didn', "didn't", 'do', 'does', 'doesn', "doesn't", 'doing', 'don', "don't", 'down', 'during', 'e', 'each', 'f', 'few', 'for', 'from', 'further', 'g', 'h', 'had', 'hadn', "hadn't", 'has', 'hasn', "hasn't", 'have', 'haven', "haven't", 'having', 'he', 'her', 'here', 'hers', 'herself', 'him', 'himself', 'his', 'how', 'i', 'if', 'in', 'into', 'is', 'isn', "isn't", 'it', "it's", 'its', 'itself', 'j', 'just', 'k', 'l', 'll', 'm', 'ma', 'me', 'mightn', "mightn't", 'more', 'most', 'mustn', "mustn't", 'my', 'myself', 'needn', "needn't", 'n', 'no', 'nor', 'not', 'now', 'o', 'of', 'off', 'on', 'once', 'only', 'or', 'other', 'our', 'ours', 'ourselves', 'out', 'over', 'own', 'p', 'q', 'r', 're', 's', 'same', 'shan', "shan't", 'she', "she's", 'should', "should've", 'shouldn', "shouldn't", 'so', 'some', 'such', 't', 'than', 'that', "that'll", 'the', 'their', 'theirs', 'them', 'themselves', 'then', 'there', 'these', 'they', 'this', 'those', 'through', 'to', 'too', 'u', 'under', 'until', 'up', 've', 'v', 'very', 'w', 'was', 'wasn', "wasn't", 'we', 'were', 'weren', "weren't", 'what', 'when', 'where', 'which', 'while', 'who', 'whom', 'why', 'will', 'with', 'won', "won't", 'wouldn', "wouldn't", 'y', 'you', "you'd", "you'll", "you're", "you've", 'your', 'yours', 'yourself', 'yourselves', 'x', 'z'];    // Information that we want to maintain 
 
-    const [progress, setProgress] = useState({stage: undefined, count:0})
+    const [progress, setProgress] = useState({ stage: undefined, count: 0 })
 
 
-    const [processing, setProcessing] = useState({file:false, 
-                                                  modelCreation:false, 
-                                                  training: false, 
-                                                  classification: false});
+    const [processing, setProcessing] = useState({
+        file: false,
+        modelCreation: false,
+        training: false,
+        classification: false
+    });
 
     const [info, setInfo] = useState({
         fileCsv: undefined, // Loaded file with the training data
@@ -65,7 +67,7 @@ const CreateTrainTest = (props) => {
         model: undefined, // the prediction model
         trained: false, // The model is already trained and ready for use
         classifyText: '', // Text to classify as test
-        result: {toxic: undefined, severe_toxic: undefined,  obscene: undefined, threat: undefined, insult: undefined, identity_hate:undefined}
+        result: { toxic: undefined, severe_toxic: undefined, obscene: undefined, threat: undefined, insult: undefined, identity_hate: undefined }
     });
 
 
@@ -75,12 +77,12 @@ const CreateTrainTest = (props) => {
     const [epochs, setEpochs] = useState(initEpochs);
     const [batchSize, setBatchSize] = useState(initBatchSize);
 
-    
+
     //const [getProcessFileWorker] = useWorker(processFile);
 
     const processFileWorker: Worker = new Worker('/workers/processFile.js');
 
-    
+
     useEffect(() => {
         processFileWorker.onmessage = ($event: MessageEvent) => {
             if ($event && $event.data) {
@@ -92,30 +94,32 @@ const CreateTrainTest = (props) => {
                 alert("File processing concluded!!");
 
                 // Store all information in "info" variable. 
-                setInfo({ ...info, tokenizer: $event.data.tokenizer, 
-                                    data: $event.data.words, 
-                                    dataTokenized: $event.data.dataTokenized, 
-                                    target: $event.data.target});
+                setInfo({
+                    ...info, tokenizer: $event.data.tokenizer,
+                    data: $event.data.words,
+                    dataTokenized: $event.data.dataTokenized,
+                    target: $event.data.target
+                });
 
                 // Set that finish teh file processing
-                setProcessing({...processing, file: false})
+                setProcessing({ ...processing, file: false })
             }
         };
     }, [processFileWorker]);
 
 
 
-      /**
-     * Function to call the file read and start the worker to process the data
-     *
-     * @param file
-     * @param delimiter
-     *
-     * @return  nothing
-     * @see
-     */
+    /**
+   * Function to call the file read and start the worker to process the data
+   *
+   * @param file
+   * @param delimiter
+   *
+   * @return  nothing
+   * @see
+   */
     const runGetData = async (file, separator) => {
-        
+
         //Open the file and read the information
         const data = await getData(file, separator)
 
@@ -123,26 +127,28 @@ const CreateTrainTest = (props) => {
         console.log("begin");
         //const processedData = await getProcessFileWorker(data, maxLines, stopWords, maxLength, noWordInLine, vocalSize, oovToken); 
 
-        processFileWorker.postMessage({msg: 'processFile', 
-                                       data: data, 
-                                       maxLines: maxLines, 
-                                       stopWords: stopWords, 
-                                       maxLength: maxLength, 
-                                       noWordInLine: noWordInLine, 
-                                       vocalSize: vocalSize, 
-                                       oovToken: oovToken});
-        
-      };
+        processFileWorker.postMessage({
+            msg: 'processFile',
+            data: data,
+            maxLines: maxLines,
+            stopWords: stopWords,
+            maxLength: maxLength,
+            noWordInLine: noWordInLine,
+            vocalSize: vocalSize,
+            oovToken: oovToken
+        });
 
-      /**
-     * Get the data from the file and call function to precess it.
-     *
-     * @param file
-     * @param delimiter
-     *
-     * @return  file data
-     * @see
-     */
+    };
+
+    /**
+   * Get the data from the file and call function to precess it.
+   *
+   * @param file
+   * @param delimiter
+   *
+   * @return  file data
+   * @see
+   */
     async function getData(file, delimiter) {
         const parseFile = async (file, delimiter) => {
             return new Promise(resolve => {
@@ -214,7 +220,7 @@ const CreateTrainTest = (props) => {
 
 
         // Store the model in the "info"
-        setInfo({ ...info, model: model});
+        setInfo({ ...info, model: model });
     }
 
     /**
@@ -242,24 +248,32 @@ const CreateTrainTest = (props) => {
 
         // Callbacks functions to use during the training
         const cBack = [
-            tf.callbacks.earlyStopping({monitor: 'val_acc'}), 
-            new tf.CustomCallback({onEpochEnd: (epoch, log) => {  
-                console.log('onEpochEnd:' );
-                historyEpoch.push(log);
-                tfvis.show.history(surface2, historyEpoch, ['loss', 'val_loss', 'acc', 'val_acc'], { height: 200});
-            }}),
-            new tf.CustomCallback({onBatchEnd: (batch, log) => {  
-                console.log('onBatchEnd' );
-            }}),
-            new tf.CustomCallback({onTrainBegin: (logs) => {
-                console.log('onTrainBegin:' );
-            }}),
-            new tf.CustomCallback({onTrainEnd: (logs) => {
-                console.log('onTrainEnd:' );
-                setInfo({...info, trained: true});
-                setProcessing({...processing, training: false})
-                alert("Trainning concluded!!");
-            }})
+            tf.callbacks.earlyStopping({ monitor: 'val_acc' }),
+            new tf.CustomCallback({
+                onEpochEnd: (epoch, log) => {
+                    console.log('onEpochEnd:');
+                    historyEpoch.push(log);
+                    tfvis.show.history(surface2, historyEpoch, ['loss', 'val_loss', 'acc', 'val_acc'], { height: 200 });
+                }
+            }),
+            new tf.CustomCallback({
+                onBatchEnd: (batch, log) => {
+                    console.log('onBatchEnd');
+                }
+            }),
+            new tf.CustomCallback({
+                onTrainBegin: (logs) => {
+                    console.log('onTrainBegin:');
+                }
+            }),
+            new tf.CustomCallback({
+                onTrainEnd: (logs) => {
+                    console.log('onTrainEnd:');
+                    setInfo({ ...info, trained: true });
+                    setProcessing({ ...processing, training: false })
+                    alert("Trainning concluded!!");
+                }
+            })
         ];
 
         // Train the model
@@ -271,19 +285,23 @@ const CreateTrainTest = (props) => {
             validationSplit: 0.20
         });
 
-        
+
     }
 
     /**
      * Function to classify a new value 
      *
+     * @param pStopWords
+     * @param pMaxLength
+     * @param pNoWordInLine
+     * @param pTokenizer
      * @return  nothing 
      * @see
      */
     async function classify(pStopWords,
-                            pMaxLength,
-                            pNoWordInLine,
-                            pTokenizer){
+        pMaxLength,
+        pNoWordInLine,
+        pTokenizer) {
 
         /**
          * Resize a array to a new size and put a default values in the new possitions 
@@ -311,43 +329,43 @@ const CreateTrainTest = (props) => {
         let sentence = info.classifyText.toLowerCase();
 
         sentence = sentence.replace("\n", " ")
-                            .replace("\\", " ")
-                            .replace("\b", " ")
-                            .replace("\f", " ")
-                            .replace("\r", " ")
-                            .replace("\t", " ")
-                            .replace("'s", " ")
-                            .replace("can't", "cannot ")
-                            .replace("-", " ")
-                            .replace("n't", " not ")
-                            .replace("'scuse", " excuse ")
-                            .replace(/[&/\\#,+=()$~%!|.":*?<>{}[\]\d]/ig, " ")
+            .replace("\\", " ")
+            .replace("\b", " ")
+            .replace("\f", " ")
+            .replace("\r", " ")
+            .replace("\t", " ")
+            .replace("'s", " ")
+            .replace("can't", "cannot ")
+            .replace("-", " ")
+            .replace("n't", " not ")
+            .replace("'scuse", " excuse ")
+            .replace(/[&/\\#,+=()$~%!|.":*?<>{}[\]\d]/ig, " ")
 
         console.log(sentence);
         // Remove stop words and other characters
         sentence = pStopWords.reduce((acc, stopWord) => {
-                                    const regex = new RegExp("^\\s*" + stopWord + "\\s*$" + 
-                                                             "|^\\s*" + stopWord + "\\s+" +
-                                                             "|\\s+" + stopWord + "\\s*$" +
-                                                             "|\\s+" + stopWord + "\\s+", "ig");
-                                    return acc.replace(regex, " ");
-            }, sentence)
+            const regex = new RegExp("^\\s*" + stopWord + "\\s*$" +
+                "|^\\s*" + stopWord + "\\s+" +
+                "|\\s+" + stopWord + "\\s*$" +
+                "|\\s+" + stopWord + "\\s+", "ig");
+            return acc.replace(regex, " ");
+        }, sentence)
             .replace(/\s+/g, " ")
             .trim();
 
         console.log(sentence);
-        
+
         // Convert sentence to words
         const input = resize(sentence.split(" "), pMaxLength, pNoWordInLine);
 
 
         console.log(pTokenizer);
-        
+
         // Convert works to respective token
-        const inputTokenized =  input.map( (item) => {
-                        const retItem = pTokenizer.find((i) => { return i.word === item; });
-                        return (retItem ? retItem.token : -1);
-                    });
+        const inputTokenized = input.map((item) => {
+            const retItem = pTokenizer.find((i) => { return i.word === item; });
+            return (retItem ? retItem.token : -1);
+        });
 
         console.log(inputTokenized);
 
@@ -355,7 +373,7 @@ const CreateTrainTest = (props) => {
 
         inputTensor.print();
 
-        const result =  info.model.predict(inputTensor);
+        const result = info.model.predict(inputTensor);
 
         result.print();
         console.log(result.print());
@@ -364,17 +382,18 @@ const CreateTrainTest = (props) => {
 
         console.log(targetValue);
 
-        setInfo({...info, result: {
-                            identity_hate: targetValue?showPercentage(targetValue[0]):undefined, 
-                            insult: targetValue?showPercentage(targetValue[1]):undefined,  
-                            obscene: targetValue?showPercentage(targetValue[2]):undefined, 
-                            severe_toxic: targetValue?showPercentage(targetValue[3]):undefined, 
-                            threat: targetValue?showPercentage(targetValue[4]):undefined, 
-                            toxic: targetValue?showPercentage(targetValue[5]):undefined
-                        }
+        setInfo({
+            ...info, result: {
+                identity_hate: targetValue ? showPercentage(targetValue[0]) : undefined,
+                insult: targetValue ? showPercentage(targetValue[1]) : undefined,
+                obscene: targetValue ? showPercentage(targetValue[2]) : undefined,
+                severe_toxic: targetValue ? showPercentage(targetValue[3]) : undefined,
+                threat: targetValue ? showPercentage(targetValue[4]) : undefined,
+                toxic: targetValue ? showPercentage(targetValue[5]) : undefined
+            }
         });
 
-        
+
     }
 
     /**
@@ -388,28 +407,30 @@ const CreateTrainTest = (props) => {
      * @param tokenizer
      * @return boolean success or error
      */
-    async function downloadModel(pModel, 
-                                pName, 
-                                pStopWords,
-                                pMaxLength,
-                                pNoWordInLine,
-                                pTokenizer){
+    async function downloadModel(pModel,
+        pName,
+        pStopWords,
+        pMaxLength,
+        pNoWordInLine,
+        pTokenizer) {
 
         //console.log(datasetConf)
-        try{
-            const datasetConf = {stopWords: pStopWords, 
-                                 maxLength: pMaxLength, 
-                                 noWordInLine: pNoWordInLine, 
-                                 tokenizer: pTokenizer};
-            
-            pModel.setUserDefinedMetadata({datasetConf: datasetConf});
+        try {
+            const datasetConf = {
+                stopWords: pStopWords,
+                maxLength: pMaxLength,
+                noWordInLine: pNoWordInLine,
+                tokenizer: pTokenizer
+            };
 
-            const saveResult = await pModel.save('downloads://' + pName );
+            pModel.setUserDefinedMetadata({ datasetConf: datasetConf });
+
+            const saveResult = await pModel.save('downloads://' + pName);
 
             return true;
         }
-        catch(e){
-            console.log (e);
+        catch (e) {
+            console.log(e);
             return false
         }
     }
@@ -421,7 +442,7 @@ const CreateTrainTest = (props) => {
      * @param {string} id Model UUID
      * @returns model
      */
-    async function loadModel(id){
+    async function loadModel(id) {
         const model = await tf.loadLayersModel('/private/model/' + id + ' /model.json');
         return model;
     }
@@ -432,10 +453,10 @@ const CreateTrainTest = (props) => {
      * @return  nothing 
      * @see
      */
-    function showPercentage(num){
-        return (num*100).toFixed(2) + " %";
+    function showPercentage(num) {
+        return (num * 100).toFixed(2) + " %";
     }
-    
+
 
     /**
      * Function called by the file loader buttom  
@@ -444,7 +465,7 @@ const CreateTrainTest = (props) => {
      * @see
      */
     async function handleLoadFile() {
-        setProcessing({...processing, file: true})
+        setProcessing({ ...processing, file: true })
         runGetData(info.fileCsv, ',');
     }
 
@@ -455,7 +476,7 @@ const CreateTrainTest = (props) => {
      * @see
      */
     async function handleTrainingModel() {
-        setProcessing({...processing, training: true} )
+        setProcessing({ ...processing, training: true })
         trainModel();
     }
 
@@ -491,10 +512,10 @@ const CreateTrainTest = (props) => {
      * @see
      */
     function handleTextChange(event) {
-        setInfo({ ...info, classifyText: event.target.value} )
+        setInfo({ ...info, classifyText: event.target.value })
     }
 
-    
+
     /**
      * Function called by the text area with the stop words  
      *
@@ -528,7 +549,7 @@ const CreateTrainTest = (props) => {
         setVocalSize(event.target.value)
     }
 
-    
+
 
     /**
      * Function called by the classify button 
@@ -538,9 +559,9 @@ const CreateTrainTest = (props) => {
      */
     function handleClassify(event) {
         classify(stopWords,
-                maxLength,
-                noWordInLine,
-                info.tokenizer);
+            maxLength,
+            noWordInLine,
+            info.tokenizer);
     }
 
 
@@ -551,8 +572,8 @@ const CreateTrainTest = (props) => {
      * @see
      */
     function handleDownloadModel(event) {
-        downloadModel(info.model, 
-            'Model', 
+        downloadModel(info.model,
+            'Model',
             stopWords,
             maxLength,
             noWordInLine,
@@ -569,12 +590,12 @@ const CreateTrainTest = (props) => {
         setBatchSize(event.target.value);
     }
 
-        /**
-     * Function called by the Download Model button 
-     *
-     * @return  nothing 
-     * @see
-     */
+    /**
+ * Function called by the Download Model button 
+ *
+ * @return  nothing 
+ * @see
+ */
     function handleEpochs(event) {
         setEpochs(event.target.value);
     }
@@ -582,20 +603,20 @@ const CreateTrainTest = (props) => {
 
 
     //Print header table
-    const printTableHeader5Lines = (arr)  => {
-        if (arr){
-            const ret = arr[0].map( (w, i) => {return <th key={i}>{'w' + i}</th>});
+    const printTableHeader5Lines = (arr) => {
+        if (arr) {
+            const ret = arr[0].map((w, i) => { return <th key={i}>{'w' + i}</th> });
             return <tr key={-1}><th scope="row">#</th>{ret}</tr>;
         }
-        else{
-            return undefined;  
+        else {
+            return undefined;
         }
     };
 
 
 
     //Print into table
-    const printTable5Lines = (arr) => arr&&arr.slice(0, 5).map((sentence, id) => {
+    const printTable5Lines = (arr) => arr && arr.slice(0, 5).map((sentence, id) => {
         const ret = sentence.map((word, i) => { return <td key={i}>{word}</td> });
         return <tr key={id}><th scope="row">{id}</th>{ret}</tr>;
     });
@@ -616,199 +637,209 @@ const CreateTrainTest = (props) => {
                             </Row>
                         </CardHeader>
                         <CardBody style={{ overflow: "scroll" }}>
-                            <CardDeck>
+                            <Row xs="1" sm="2" md="3">
+                            <Col>
                                 <Card>
-                                    <CardHeader><i className="fas fa-upload"></i> 1 - Load & Process Data</CardHeader>
+                                    <CardHeader><i className="fas fa-upload"></i> 1 - Setup the parameters</CardHeader>
+                                    <CardBody>
+                                        <CardSubtitle className="mb-2 text-muted"></CardSubtitle>
+                                        <Row>
+                                                <Col>
+                                                    <FormGroup>
+                                                        <label
+                                                            className="form-control-label"
+                                                            htmlFor="list-stop-words">
+                                                            List stop words to remove
+                                                        <span href="#" id="list-stop-words-info-icon">
+                                                                <i className="fas fa-info-circle ml-1" />
+                                                            </span>
+                                                            <UncontrolledTooltip delay={0} placement="right" target="list-stop-words-info-icon">
+                                                                Words that do not contribute to the meaning of the sentence and will be removed.
+                                                        </UncontrolledTooltip>
+                                                        </label>
+                                                        <Input
+                                                            id="list-stop-words"
+                                                            name="list-stop-words"
+                                                            placeholder="Stop words to remove"
+                                                            rows="4"
+                                                            maxLength="1200"
+                                                            type="textarea"
+                                                            value={stopWords}
+                                                            onChange={e => handleStopWords(e)} />
+                                                    </FormGroup>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col>
+                                                    <FormGroup>
+                                                        <label className="form-control-label" htmlFor="number-of-words-select">
+                                                            Number of words in a sentences
+                                                                <span href="#" id="number-of-words-info-icon">
+                                                                <i className="fas fa-info-circle ml-1" />
+                                                            </span>
+                                                            <UncontrolledTooltip delay={0} placement="right" target="number-of-words-info-icon">
+                                                                Number of words in each setence that will be use as model input. Senteces with more words will be truncated. Sentence with less will be padded with 'NWIL'.
+                                                                </UncontrolledTooltip>
+                                                        </label>
+
+                                                        <Input id="number-of-words-select"
+                                                            name="number-of-words-select"
+                                                            min={10} max={40}
+                                                            type="number"
+                                                            step="1"
+                                                            value={maxLength}
+                                                            onChange={e => handleMaxLength(e)} />
+                                                    </FormGroup>
+                                                </Col>
+                                                <Col>
+                                                    <FormGroup>
+                                                        <label className="form-control-label" htmlFor="vocal-size">
+                                                            Number of words used as token
+                                                                <span href="#" id="vocal-size-icon">
+                                                                <i className="fas fa-info-circle ml-1" />
+                                                            </span>
+                                                            <UncontrolledTooltip delay={0} placement="right" target="vocal-size-icon">
+                                                                Size of the different words used in the model
+                                                                </UncontrolledTooltip>
+                                                        </label>
+
+                                                        <Input id="vocal-size"
+                                                            name="vocal-size"
+                                                            min={10} max={40}
+                                                            type="number"
+                                                            step="1"
+                                                            value={vocalSize}
+                                                            onChange={e => handleVocalSize(e)} />
+                                                    </FormGroup>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col>
+                                                    <FormGroup>
+                                                        <label className="form-control-label" htmlFor="batch-size">
+                                                            Batch Size
+                                                                <span href="#" id="batch-size-icon">
+                                                                <i className="fas fa-info-circle ml-1" />
+                                                            </span>
+                                                            <UncontrolledTooltip delay={0} placement="right" target="batch-size-icon">
+                                                                Number of processed records before updated the model’s internal parameters.
+                                                                </UncontrolledTooltip>
+                                                        </label>
+
+                                                        <Input id="batch-size"
+                                                            name="batch-size"
+                                                            min={10} max={40}
+                                                            type="number"
+                                                            step="1"
+                                                            value={batchSize}
+                                                            onChange={e => handleBatchSize(e)} />
+                                                    </FormGroup>
+                                                </Col>
+                                                <Col>
+                                                    <FormGroup>
+                                                        <label className="form-control-label" htmlFor="epochs">
+
+                                                            Epochs
+                                                                <span href="#" id="epochs-icon">
+                                                                <i className="fas fa-info-circle ml-1" />
+                                                            </span>
+                                                            <UncontrolledTooltip delay={0} placement="right" target="epochs-icon">
+                                                                Number of times the dataset is used to train the model.
+                                                                </UncontrolledTooltip>
+                                                        </label>
+
+                                                        <Input id="epochs"
+                                                            name="epochs"
+                                                            min={10} max={40}
+                                                            type="number"
+                                                            step="1"
+                                                            value={epochs}
+                                                            onChange={e => handleEpochs(e)} />
+                                                    </FormGroup>
+                                                </Col>
+                                            </Row>
+
+                                    </CardBody>
+                                </Card>
+                                <div>&nbsp;</div>
+                                <Card>
+                                    <CardHeader><i className="fas fa-upload"></i> 2 - Load & Process Data</CardHeader>
                                     <CardBody>
                                         <CardSubtitle className="mb-2 text-muted">Load data from file and transform in tensors to use in a prediction model training and validation.<p>Download training data <a href="/training-data/train.zip">here</a></p></CardSubtitle>
-                                            <Col>
-                                                <Row>
-                                                    <Col>
-                                                        <FormGroup>
+                                        <Col>
+                                            <Row>
+                                                <Col>
+                                                    <FormGroup>
 
-                                                            <div className="custom-file">
-                                                                <input type="file" className="custom-file-input" name="file" id="file" onChange={handleFileChange} />
-                                                                <label className="custom-file-label" htmlFor="inputGroupFile01">{info.fileCsv ? info.fileCsv.name : 'Choose file'}</label>
-                                                            </div>
-                                                        </FormGroup>
-                                                    </Col>
-                                                    <Col>
-                                                        <FormGroup>
-                                                            <Button className="btn-icon"
-                                                                color="primary"
-                                                                type="button"
-                                                                disabled={!info.fileCsv}
-                                                                onClick={() => handleLoadFile()}>
-                                                                <span className="btn-inner--icon mr-0">
-                                                                    <i className="fas fa-upload"></i>
-                                                                </span>
-                                                                <span className="btn-inner--text d-none d-lg-inline"> 
+                                                        <div className="custom-file">
+                                                            <input type="file" className="custom-file-input" name="file" id="file" onChange={handleFileChange} />
+                                                            <label className="custom-file-label" htmlFor="inputGroupFile01">{info.fileCsv ? info.fileCsv.name : 'Choose file'}</label>
+                                                        </div>
+                                                    </FormGroup>
+                                                </Col>
+                                                <Col>
+                                                    <FormGroup>
+                                                        <Button className="btn-icon"
+                                                            color="primary"
+                                                            type="button"
+                                                            disabled={!info.fileCsv}
+                                                            onClick={() => handleLoadFile()}>
+                                                            <span className="btn-inner--icon mr-0">
+                                                                <i className="fas fa-upload"></i>
+                                                            </span>
+                                                            <span className="btn-inner--text d-none d-lg-inline">
                                                                 {!processing.file ? " Load File" : " Loading.."}</span>
-                                                                {processing.file ? (
-                                                                    <Spinner
+                                                            {processing.file ? (
+                                                                <Spinner
                                                                     style={{ width: "0.7rem", height: "0.7rem" }}
                                                                     type="grow"
                                                                     color="light"
-                                                                    />
-                                                                ):null}
-                                                            </Button>
-                                                        </FormGroup>
-                                                    </Col>
-                                                </Row>
-                                                <Row>
-                                                    <Col>
-                                                    <FormGroup>
-                                                    <label
-                                                        className="form-control-label"
-                                                        htmlFor="list-stop-words">
-                                                        List stop words to remove
-                                                        <span href="#" id="list-stop-words-info-icon">
-                                                            <i className="fas fa-info-circle ml-1" />
-                                                        </span>
-                                                        <UncontrolledTooltip delay={0} placement="right" target="list-stop-words-info-icon">
-                                                        Words that do not contribute to the meaning of the sentence and will be removed.
-                                                        </UncontrolledTooltip>
-                                                    </label>
-                                                    <Input
-                                                        id="list-stop-words"
-                                                        name="list-stop-words"
-                                                        placeholder="Stop words to remove"
-                                                        rows="4"
-                                                        maxLength="1200"
-                                                        type="textarea"
-                                                        value={stopWords}
-                                                        onChange={e => handleStopWords(e)}/>
-                                                        </FormGroup>
-                                                    </Col>
-                                                </Row>
-                                                <Row>
-                                                    <Col>
-                                                        <FormGroup>
-                                                            <label className="form-control-label" htmlFor="number-of-words-select">
-                                                                Number of words in a sentences
-                                                                <span href="#" id="number-of-words-info-icon">
-                                                                    <i className="fas fa-info-circle ml-1" />
-                                                                </span>
-                                                                <UncontrolledTooltip delay={0} placement="right" target="number-of-words-info-icon">
-                                                                    Number of words in each setence that will be use as model input. Senteces with more words will be truncated. Sentence with less will be padded with 'NWIL'.   
-                                                                </UncontrolledTooltip>
-                                                            </label>
+                                                                />
+                                                            ) : null}
+                                                        </Button>
+                                                    </FormGroup>
+                                                </Col>
+                                            </Row>
 
-                                                            <Input id="number-of-words-select"
-                                                                name="number-of-words-select"
-                                                                min={10} max={40}
-                                                                type="number"
-                                                                step="1"
-                                                                value={maxLength}
-                                                                onChange={e => handleMaxLength(e)}/>
-                                                        </FormGroup>
-                                                    </Col>
-                                                    <Col>
-                                                        <FormGroup>
-                                                            <label className="form-control-label" htmlFor="vocal-size">
-                                                                Number of words used as token
-                                                                <span href="#" id="vocal-size-icon">
-                                                                    <i className="fas fa-info-circle ml-1" />
-                                                                </span>
-                                                                <UncontrolledTooltip delay={0} placement="right" target="vocal-size-icon">
-                                                                    Size of the different words used in the model 
-                                                                </UncontrolledTooltip>
-                                                            </label>
-
-                                                            <Input id="vocal-size"
-                                                                name="vocal-size"
-                                                                min={10} max={40}
-                                                                type="number"
-                                                                step="1"
-                                                                value={vocalSize}
-                                                                onChange={e => handleVocalSize(e)}/>
-                                                        </FormGroup>
-                                                    </Col>
-                                                </Row>
-                                                <Row>
-                                                    <Col>
-                                                        <FormGroup>
-                                                            <label className="form-control-label" htmlFor="batch-size">
-                                                                Batch Size
-                                                                <span href="#" id="batch-size-icon">
-                                                                    <i className="fas fa-info-circle ml-1" />
-                                                                </span>
-                                                                <UncontrolledTooltip delay={0} placement="right" target="batch-size-icon">
-                                                                Number of processed records before updated the model’s internal parameters.
-                                                                </UncontrolledTooltip>
-                                                            </label>
-
-                                                            <Input id="batch-size"
-                                                                name="batch-size"
-                                                                min={10} max={40}
-                                                                type="number"
-                                                                step="1"
-                                                                value={batchSize}
-                                                                onChange={e => handleBatchSize(e)}/>
-                                                        </FormGroup>
-                                                    </Col>
-                                                    <Col>
-                                                        <FormGroup>
-                                                            <label className="form-control-label" htmlFor="epochs">
-                                                                
-                                                                Epochs
-                                                                <span href="#" id="epochs-icon">
-                                                                    <i className="fas fa-info-circle ml-1" />
-                                                                </span>
-                                                                <UncontrolledTooltip delay={0} placement="right" target="epochs-icon">
-                                                                Number of times the dataset is used to train the model.
-                                                                </UncontrolledTooltip>
-                                                            </label>
-
-                                                            <Input id="epochs"
-                                                                name="epochs"
-                                                                min={10} max={40}
-                                                                type="number"
-                                                                step="1"
-                                                                value={epochs}
-                                                                onChange={e => handleEpochs(e)}/>
-                                                        </FormGroup>
-                                                    </Col>
-                                                </Row>
-                                                
-                                                <Row>
-                                                    <Table striped responsive size="sm"><thead>{printTableHeader5Lines(info.data)}</thead><tbody>{printTable5Lines(info.data)}</tbody></Table>
-                                                    <Table striped responsive size="sm"><thead>{printTableHeader5Lines(info.dataTokenized)}</thead><tbody>{printTable5Lines(info.dataTokenized)}</tbody></Table>
-                                                </Row>
-                                            </Col>
+                                            <Row>
+                                                <Table striped responsive size="sm"><thead>{printTableHeader5Lines(info.data)}</thead><tbody>{printTable5Lines(info.data)}</tbody></Table>
+                                                <Table striped responsive size="sm"><thead>{printTableHeader5Lines(info.dataTokenized)}</thead><tbody>{printTable5Lines(info.dataTokenized)}</tbody></Table>
+                                            </Row>
+                                        </Col>
                                     </CardBody>
                                 </Card>
-                                <div>   
+                                </Col>
+                                <Col>
                                     <Card>
-                                        <CardHeader><i className="fab fa-buromobelexperte"></i> 2 - Create a Prediction Model</CardHeader>
+                                        <CardHeader><i className="fab fa-buromobelexperte"></i> 3 - Create a Prediction Model</CardHeader>
                                         <CardBody>
                                             <CardSubtitle className="mb-2 text-muted">Create a sequencial prediction model with five layers.</CardSubtitle>
-                                                <Col>
-                                                    <Row>
-                                                        <FormGroup>
-                                                            <Button disabled={!info.dataTokenized}
-                                                                className="btn-icon"
-                                                                color="primary"
-                                                                type="button"
-                                                                onClick={() => handleCreateModel()}>
-                                                                <span className="btn-inner--icon mr-0">
-                                                                    <i className="fas fa-plus-circle"></i>
-                                                                </span>
-                                                                <span className="btn-inner--text d-none d-lg-inline"> Create Model</span>
-                                                            </Button>
-                                                        </FormGroup>
-                                                    </Row>
-                                                    <Row>
-                                                        <div id="ModelInfo" name="ModelInfo"></div>
-                                                    </Row>
-                                                </Col>
+                                            <Col>
+                                                <Row>
+                                                    <FormGroup>
+                                                        <Button disabled={!info.dataTokenized}
+                                                            className="btn-icon"
+                                                            color="primary"
+                                                            type="button"
+                                                            onClick={() => handleCreateModel()}>
+                                                            <span className="btn-inner--icon mr-0">
+                                                                <i className="fas fa-plus-circle"></i>
+                                                            </span>
+                                                            <span className="btn-inner--text d-none d-lg-inline"> Create Model</span>
+                                                        </Button>
+                                                    </FormGroup>
+                                                </Row>
+                                                <Row>
+                                                    <div id="ModelInfo" name="ModelInfo"></div>
+                                                </Row>
+                                            </Col>
                                         </CardBody>
                                     </Card>
                                     <div>&nbsp;</div>
                                     <Card>
-                                    <CardHeader><i className="fas fa-plane-departure"></i> 3 - Start to Train Model</CardHeader>
-                                    <CardBody>
-                                        <CardSubtitle className="mb-2 text-muted">Train the created model with the loaded training data.</CardSubtitle>
+                                        <CardHeader><i className="fas fa-plane-departure"></i> 4 - Start to Train Model</CardHeader>
+                                        <CardBody>
+                                            <CardSubtitle className="mb-2 text-muted">Train the created model with the loaded training data.</CardSubtitle>
                                             <Col>
                                                 <Row>
                                                     <FormGroup>
@@ -821,14 +852,14 @@ const CreateTrainTest = (props) => {
                                                                 <i className="fas fa-dumbbell"></i>
                                                             </span>
                                                             <span className="btn-inner--text d-none d-lg-inline">
-                                                            {!processing.training ? " Train Model" : " Training.."}</span>
-                                                                {processing.training ? (
-                                                                    <Spinner
+                                                                {!processing.training ? " Train Model" : " Training.."}</span>
+                                                            {processing.training ? (
+                                                                <Spinner
                                                                     style={{ width: "0.7rem", height: "0.7rem" }}
                                                                     type="grow"
                                                                     color="light"
-                                                                    />
-                                                                ):null}
+                                                                />
+                                                            ) : null}
                                                         </Button>
                                                     </FormGroup>
                                                 </Row>
@@ -836,79 +867,104 @@ const CreateTrainTest = (props) => {
                                                     <Col>
                                                         <div id="BatchGraph"></div>
                                                     </Col>
-                                                </Row>  
+                                                </Row>
                                                 <Row>
                                                     <Col>
                                                         <div id="EpochGraph"></div>
                                                     </Col>
                                                 </Row>
                                             </Col>
-                                    </CardBody>
-                                </Card>
-                                </div>
-                                <Card>
-                                    <CardHeader><i className="fas fa-stethoscope"></i> 4 - Test the Model</CardHeader>
+                                        </CardBody>
+                                    </Card>
+                                    
+                                
+                              
+                              </Col>
+                              <Col>
+                              <Card>
+                                    <CardHeader><i className="fas fa-stethoscope"></i> 5 - Test the Model</CardHeader>
                                     <CardBody>
-                                        <CardSubtitle className="mb-2 text-muted">Last step is test the model with new data.</CardSubtitle>
-                                            <Row>
-                                                <Col>
-                                                    <Input 
-                                                        className="text-toxicity"
-                                                        id="text-toxicity"
-                                                        placeholder="Text to classify"
-                                                        rows="4"
-                                                        type="textarea"
-                                                        onChange={handleTextChange} />
-                                                </Col>
-                                            </Row>
-                                            <Row>&nbsp;</Row>
-                                            <Row>
-                                                <Col>
-                                                    <Button disabled={!info.trained}
-                                                            className="btn-icon"
-                                                            color="primary"
-                                                            type="button"
-                                                            onClick={() => handleClassify() }>
-                                                        <span className="btn-inner--icon mr-0">
-                                                            <i className="fas fa-vial"></i>
-                                                        </span>
-                                                        <span className="btn-inner--text d-none d-lg-inline"> Classify</span>
+                                        <CardSubtitle className="mb-2 text-muted">Next step is test the model with new data.</CardSubtitle>
+                                        <Row>
+                                            <Col xs="8">
+                                                <Input
+                                                    className="text-toxicity"
+                                                    id="text-toxicity"
+                                                    placeholder="Text to classify"
+                                                    rows="4"
+                                                    type="textarea"
+                                                    onChange={handleTextChange} />
+                                            </Col>
+                                        
+                                            <Col>
+                                                <Button disabled={!info.trained}
+                                                    className="btn-icon"
+                                                    color="primary"
+                                                    type="button"
+                                                    onClick={() => handleClassify()}>
+                                                    <span className="btn-inner--icon mr-0">
+                                                        <i className="fas fa-vial"></i>
+                                                    </span>
+                                                    <span className="btn-inner--text d-none d-lg-inline"> Classify</span>
 
-                                                    </Button>
+                                                </Button>
+                                            </Col>
+                                        </Row>
+                                        <Row>&nbsp;</Row>
+                                        <Row>
+                                            <Col>
+                                                <Table striped responsive size="sm">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Toxic</th>
+                                                            <th>Severe Toxic</th>
+                                                            <th>Obscene</th>
+                                                            <th>Threat</th>
+                                                            <th>Insult</th>
+                                                            <th>Identity Hate</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td><Badge pill>{info.result && info.result.toxic}</Badge></td>
+                                                            <td><Badge pill>{info.result && info.result.severe_toxic}</Badge></td>
+                                                            <td><Badge pill>{info.result && info.result.obscene}</Badge></td>
+                                                            <td><Badge pill>{info.result && info.result.threat}</Badge></td>
+                                                            <td><Badge pill>{info.result && info.result.insult}</Badge></td>
+                                                            <td><Badge pill>{info.result && info.result.identity_hate}</Badge></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </Table>
                                                 </Col>
                                             </Row>
-                                            <Row>&nbsp;</Row>
-                                            <Row>
-                                                <Col sm="12" md={{ size: 8, offset: 2 }}>
-                                                    <ListGroup>
-                                                        <ListGroupItem className="justify-content-between">Toxic <Badge pill>{info.result&&info.result.toxic}</Badge></ListGroupItem>
-                                                        <ListGroupItem className="justify-content-between">Severe Toxic <Badge pill>{info.result&&info.result.severe_toxic}</Badge></ListGroupItem>
-                                                        <ListGroupItem className="justify-content-between">Obscene <Badge pill>{info.result&&info.result.obscene}</Badge></ListGroupItem>
-                                                        <ListGroupItem className="justify-content-between">Threat <Badge pill>{info.result&&info.result.threat}</Badge></ListGroupItem>
-                                                        <ListGroupItem className="justify-content-between">Insult <Badge pill>{info.result&&info.result.insult}</Badge></ListGroupItem>
-                                                        <ListGroupItem className="justify-content-between">Identity Hate <Badge pill>{info.result&&info.result.identity_hate}</Badge></ListGroupItem>
-                                                    </ListGroup>
-                                                </Col>
-                                            </Row>
-                                            <Row>&nbsp;</Row>
-                                            <Row>
-                                                <Col>
-                                                    <Button disabled={!info.trained}
-                                                            className="btn-icon"
-                                                            color="primary"
-                                                            type="button"
-                                                            onClick={() => handleDownloadModel() }>
-                                                        <span className="btn-inner--icon mr-0">
-                                                            <i className="fas fa-download"></i>
-                                                        </span>
-                                                        <span className="btn-inner--text d-none d-lg-inline"> Download Model</span>
 
-                                                    </Button>
-                                                </Col>
-                                            </Row>
+                                        </CardBody>
+                                    </Card>
+                                    <div>&nbsp;</div>
+                                <Card>
+                                    <CardHeader><i className="fas fa-download"></i> 6 - Download the Model and use it</CardHeader>
+                                    <CardBody>
+                                        <CardSubtitle className="mb-2 text-muted">Last step is download the created model and use it in Javascript code.</CardSubtitle>
+                                        
+                                        <Row>
+                                            <Col>
+                                                <Button disabled={!info.trained}
+                                                    className="btn-icon"
+                                                    color="primary"
+                                                    type="button"
+                                                    onClick={() => handleDownloadModel()}>
+                                                    <span className="btn-inner--icon mr-0">
+                                                        <i className="fas fa-download"></i>
+                                                    </span>
+                                                    <span className="btn-inner--text d-none d-lg-inline"> Download Model</span>
+
+                                                </Button>
+                                            </Col>
+                                        </Row>
                                     </CardBody>
                                 </Card>
-                            </CardDeck>
+                                </Col>  
+                                </Row>
                         </CardBody>
                     </Card>
                 </Col>
