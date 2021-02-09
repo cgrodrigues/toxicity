@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Switch, Link, NavLink } from 'react-router-dom';
 import { Navbar, NavbarBrand, NavbarToggler, Collapse, Nav, NavItem, NavbarText  } from 'reactstrap';
 import PreTrainedModel from './views/PreTrainedModel';
 import CreateTrainTest from './views/CreateTrainTest';
+import Footer from "./components/Footer/Footer.js";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,6 +39,7 @@ function App() {
           </Switch>
         </div>
       </BrowserRouter>
+      <Footer/>
     </div>
   );
 }

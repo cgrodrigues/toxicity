@@ -274,7 +274,10 @@ const CreateTrainTest = (props) => {
      * @return  nothing 
      * @see
      */
-    async function classify(){
+    async function classify(pStopWords,
+                            pMaxLength,
+                            pNoWordInLine,
+                            pTokenizer){
 
         /**
          * Resize a array to a new size and put a default values in the new possitions 
@@ -316,7 +319,7 @@ const CreateTrainTest = (props) => {
 
         console.log(sentence);
         // Remove stop words and other characters
-        sentence = stopWords.reduce((acc, stopWord) => {
+        sentence = pStopWords.reduce((acc, stopWord) => {
                                     const regex = new RegExp("^\\s*" + stopWord + "\\s*$" + 
                                                              "|^\\s*" + stopWord + "\\s+" +
                                                              "|\\s+" + stopWord + "\\s*$" +
@@ -329,15 +332,14 @@ const CreateTrainTest = (props) => {
         console.log(sentence);
         
         // Convert sentence to words
-        const input = resize(sentence.split(" "), maxLength, noWordInLine);
+        const input = resize(sentence.split(" "), pMaxLength, pNoWordInLine);
 
-        console.log(input);
 
-        console.log(info.tokenizer);
+        console.log(pTokenizer);
         
         // Convert works to respective token
         const inputTokenized =  input.map( (item) => {
-                        const retItem = info.tokenizer.find((i) => { return i.word === item; });
+                        const retItem = pTokenizer.find((i) => { return i.word === item; });
                         return (retItem ? retItem.token : -1);
                     });
 
@@ -367,6 +369,55 @@ const CreateTrainTest = (props) => {
         });
 
         
+    }
+
+    /**
+     * saveModel
+     * Send a model information to the server, file or loacl storage
+     * @param model
+     * @param name
+     * @param stopWords
+     * @param maxLength
+     * @param noWordInLine
+     * @param tokenizer
+     * @return boolean success or error
+     */
+    async function downloadModel(pModel, 
+                                pName, 
+                                pStopWords,
+                                pMaxLength,
+                                pNoWordInLine,
+                                pTokenizer){
+
+        //console.log(datasetConf)
+        try{
+            const datasetConf = {stopWords: pStopWords, 
+                                 maxLength: pMaxLength, 
+                                 noWordInLine: pNoWordInLine, 
+                                 tokenizer: pTokenizer};
+            
+            pModel.setUserDefinedMetadata({datasetConf: datasetConf});
+
+            const saveResult = await pModel.save('downloads://' + pName );
+
+            return true;
+        }
+        catch(e){
+            console.log (e);
+            return false
+        }
+    }
+
+
+    /**
+     * Load Model previusly saved in the server
+     *
+     * @param {string} id Model UUID
+     * @returns model
+     */
+    async function loadModel(id){
+        const model = await tf.loadLayersModel('/private/model/' + id + ' /model.json');
+        return model;
     }
 
     /**
@@ -469,6 +520,37 @@ const CreateTrainTest = (props) => {
     function handleVocalSize(event) {
         console.log(event.target.value)
         setVocalSize(event.target.value)
+    }
+
+    
+
+    /**
+     * Function called by the classify button 
+     *
+     * @return  nothing 
+     * @see
+     */
+    function handleClassify(event) {
+        classify(stopWords,
+                maxLength,
+                noWordInLine,
+                info.tokenizer);
+    }
+
+
+    /**
+     * Function called by the Download Model button 
+     *
+     * @return  nothing 
+     * @see
+     */
+    function handleDownloadModel(event) {
+        downloadModel(info.model, 
+            'Model', 
+            stopWords,
+            maxLength,
+            noWordInLine,
+            info.tokenizer);
     }
 
 
@@ -711,7 +793,7 @@ const CreateTrainTest = (props) => {
                                                             className="btn-icon"
                                                             color="primary"
                                                             type="button"
-                                                            onClick={() => classify() }>
+                                                            onClick={() => handleClassify() }>
                                                         <span className="btn-inner--icon mr-0">
                                                             <i className="fas fa-vial"></i>
                                                         </span>
@@ -731,6 +813,22 @@ const CreateTrainTest = (props) => {
                                                         <ListGroupItem className="justify-content-between">Insult <Badge pill>{info.result&&info.result.insult}</Badge></ListGroupItem>
                                                         <ListGroupItem className="justify-content-between">Identity Hate <Badge pill>{info.result&&info.result.identity_hate}</Badge></ListGroupItem>
                                                     </ListGroup>
+                                                </Col>
+                                            </Row>
+                                            <Row>&nbsp;</Row>
+                                            <Row>
+                                                <Col>
+                                                    <Button disabled={!info.trained}
+                                                            className="btn-icon"
+                                                            color="primary"
+                                                            type="button"
+                                                            onClick={() => handleDownloadModel() }>
+                                                        <span className="btn-inner--icon mr-0">
+                                                            <i className="fas fa-download"></i>
+                                                        </span>
+                                                        <span className="btn-inner--text d-none d-lg-inline"> Download Model</span>
+
+                                                    </Button>
                                                 </Col>
                                             </Row>
                                     </CardBody>
