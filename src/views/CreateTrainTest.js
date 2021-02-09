@@ -19,7 +19,8 @@ import {
     ListGroup,
     ListGroupItem,
     Badge,
-    Spinner
+    Spinner,
+    UncontrolledTooltip
 } from "reactstrap";
 
 
@@ -29,11 +30,11 @@ import {
 
 const CreateTrainTest = (props) => {
 
-    const maxLength = 40; // Maximum number of words in a sentences, it's the same as the input of the model
+    const initMaxLength = 40; // Maximum number of words in a sentences, it's the same as the input of the model
 
     const noWordInLine = "NWIL"; // In sentences with less of "maxLength" words the remaining positions will be filled with this.
 
-    const vocalSize = 3000; // Maximum number of words used by tokenization, not all words in setences will be hear. 
+    const initVocalSize = 3000; // Maximum number of words used by tokenization, not all words in setences will be hear. 
                             // If any word in the setence is not hear the return will be the token for "oovToken"   
 
     const oovToken = "outofvocabulary";  // teh word is not in the words used for tokenization
@@ -41,7 +42,7 @@ const CreateTrainTest = (props) => {
     const maxLines = 200000; //Maximum lines to process from the file
 
     // list of stop words to remove of teh text
-    const stopWords = ['a', 'about', 'above', 'after', 'again', 'against', 'ain', 'all', 'am', 'an', 'and', 'any', 'are', 'aren', "aren't", 'as', 'at', 'b', 'be', 'because', 'been', 'before', 'being', 'below', 'between', 'both', 'but', 'by', 'c', 'can', 'couldn', "couldn't", 'd', 'did', 'didn', "didn't", 'do', 'does', 'doesn', "doesn't", 'doing', 'don', "don't", 'down', 'during', 'e', 'each', 'f', 'few', 'for', 'from', 'further', 'g', 'h', 'had', 'hadn', "hadn't", 'has', 'hasn', "hasn't", 'have', 'haven', "haven't", 'having', 'he', 'her', 'here', 'hers', 'herself', 'him', 'himself', 'his', 'how', 'i', 'if', 'in', 'into', 'is', 'isn', "isn't", 'it', "it's", 'its', 'itself', 'j', 'just', 'k', 'l', 'll', 'm', 'ma', 'me', 'mightn', "mightn't", 'more', 'most', 'mustn', "mustn't", 'my', 'myself', 'needn', "needn't", 'n', 'no', 'nor', 'not', 'now', 'o', 'of', 'off', 'on', 'once', 'only', 'or', 'other', 'our', 'ours', 'ourselves', 'out', 'over', 'own', 'p', 'q', 'r', 're', 's', 'same', 'shan', "shan't", 'she', "she's", 'should', "should've", 'shouldn', "shouldn't", 'so', 'some', 'such', 't', 'than', 'that', "that'll", 'the', 'their', 'theirs', 'them', 'themselves', 'then', 'there', 'these', 'they', 'this', 'those', 'through', 'to', 'too', 'u', 'under', 'until', 'up', 've', 'v', 'very', 'w', 'was', 'wasn', "wasn't", 'we', 'were', 'weren', "weren't", 'what', 'when', 'where', 'which', 'while', 'who', 'whom', 'why', 'will', 'with', 'won', "won't", 'wouldn', "wouldn't", 'y', 'you', "you'd", "you'll", "you're", "you've", 'your', 'yours', 'yourself', 'yourselves', 'x','z'];    // Information that we want to maintain 
+    const initialStopWords = ['a', 'about', 'above', 'after', 'again', 'against', 'ain', 'all', 'am', 'an', 'and', 'any', 'are', 'aren', "aren't", 'as', 'at', 'b', 'be', 'because', 'been', 'before', 'being', 'below', 'between', 'both', 'but', 'by', 'c', 'can', 'couldn', "couldn't", 'd', 'did', 'didn', "didn't", 'do', 'does', 'doesn', "doesn't", 'doing', 'don', "don't", 'down', 'during', 'e', 'each', 'f', 'few', 'for', 'from', 'further', 'g', 'h', 'had', 'hadn', "hadn't", 'has', 'hasn', "hasn't", 'have', 'haven', "haven't", 'having', 'he', 'her', 'here', 'hers', 'herself', 'him', 'himself', 'his', 'how', 'i', 'if', 'in', 'into', 'is', 'isn', "isn't", 'it', "it's", 'its', 'itself', 'j', 'just', 'k', 'l', 'll', 'm', 'ma', 'me', 'mightn', "mightn't", 'more', 'most', 'mustn', "mustn't", 'my', 'myself', 'needn', "needn't", 'n', 'no', 'nor', 'not', 'now', 'o', 'of', 'off', 'on', 'once', 'only', 'or', 'other', 'our', 'ours', 'ourselves', 'out', 'over', 'own', 'p', 'q', 'r', 're', 's', 'same', 'shan', "shan't", 'she', "she's", 'should', "should've", 'shouldn', "shouldn't", 'so', 'some', 'such', 't', 'than', 'that', "that'll", 'the', 'their', 'theirs', 'them', 'themselves', 'then', 'there', 'these', 'they', 'this', 'those', 'through', 'to', 'too', 'u', 'under', 'until', 'up', 've', 'v', 'very', 'w', 'was', 'wasn', "wasn't", 'we', 'were', 'weren', "weren't", 'what', 'when', 'where', 'which', 'while', 'who', 'whom', 'why', 'will', 'with', 'won', "won't", 'wouldn', "wouldn't", 'y', 'you', "you'd", "you'll", "you're", "you've", 'your', 'yours', 'yourself', 'yourselves', 'x','z'];    // Information that we want to maintain 
 
     const [progress, setProgress] = useState({stage: undefined, count:0})
 
@@ -63,6 +64,11 @@ const CreateTrainTest = (props) => {
         result: {toxic: undefined, severe_toxic: undefined,  obscene: undefined, threat: undefined, insult: undefined, identity_hate:undefined}
     });
 
+
+    const [stopWords, setStopWords] = useState(initialStopWords);
+    const [maxLength, setMaxLength] = useState(initMaxLength);
+    const [vocalSize, setVocalSize] = useState(initVocalSize);
+
     
     //const [getProcessFileWorker] = useWorker(processFile);
 
@@ -78,7 +84,7 @@ const CreateTrainTest = (props) => {
                 console.log("End.");
 
                 alert("File processing concluded!!");
-                
+
                 // Store all information in "info" variable. 
                 setInfo({ ...info, tokenizer: $event.data.tokenizer, 
                                     data: $event.data.words, 
@@ -235,6 +241,9 @@ const CreateTrainTest = (props) => {
                 console.log('onEpochEnd:' );
                 historyEpoch.push(log);
                 tfvis.show.history(surface2, historyEpoch, ['loss', 'val_loss', 'acc', 'val_acc'], { height: 200});
+            }}),
+            new tf.CustomCallback({onBatchEnd: (batch, log) => {  
+                console.log('onBatchEnd' );
             }}),
             new tf.CustomCallback({onTrainBegin: (logs) => {
                 console.log('onTrainBegin:' );
@@ -428,6 +437,41 @@ const CreateTrainTest = (props) => {
         setInfo({ ...info, classifyText: event.target.value} )
     }
 
+    
+    /**
+     * Function called by the text area with the stop words  
+     *
+     * @return  nothing 
+     * @see
+     */
+    function handleStopWords(event) {
+        console.log(event.target.value)
+        setStopWords(event.target.value.split(','))
+    }
+
+    /**
+     * Function called by the text with max number of words in a sentance
+     *
+     * @return  nothing 
+     * @see
+     */
+    function handleMaxLength(event) {
+        console.log(event.target.value)
+        setMaxLength(event.target.value)
+    }
+
+    /**
+     * Function called by the size of the array with the words to tokenize  
+     *
+     * @return  nothing 
+     * @see
+     */
+    function handleVocalSize(event) {
+        console.log(event.target.value)
+        setVocalSize(event.target.value)
+    }
+
+
 
     //Print header table
     const printTableHeader5Lines = (arr)  => {
@@ -500,6 +544,72 @@ const CreateTrainTest = (props) => {
                                                                     />
                                                                 ):null}
                                                             </Button>
+                                                        </FormGroup>
+                                                    </Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col>
+                                                    <FormGroup>
+                                                    <label
+                                                        className="form-control-label"
+                                                        htmlFor="list-stop-words">
+                                                        List stop words to remove
+                                                        <i href="#"  id="list-stop-words-info-icon" className="fas fa-info-circle ml-1" />
+                                                        <UncontrolledTooltip delay={0} placement="right" target="list-stop-words-info-icon">
+                                                            ...
+                                                        </UncontrolledTooltip>
+                                                    </label>
+                                                    <Input
+                                                        id="list-stop-words"
+                                                        name="list-stop-words"
+                                                        placeholder="Stop words to remove"
+                                                        rows="4"
+                                                        maxLength="1200"
+                                                        type="textarea"
+                                                        value={stopWords}
+                                                        onChange={e => handleStopWords(e)}/>
+                                                        </FormGroup>
+                                                    </Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col>
+                                                        <FormGroup>
+                                                            <label className="form-control-label" htmlFor="number-of-words-select">
+                                                                Number of words in a sentences
+                                                                <i href="#" id="number-of-words-info-icon" className="fas fa-info-circle ml-1" />
+                                                                <UncontrolledTooltip delay={0} placement="right" target="number-of-words-info-icon">
+                                                                    ...
+                                                                </UncontrolledTooltip>
+                                                            </label>
+
+                                                            <Input id="number-of-words-select"
+                                                                name="number-of-words-select"
+                                                                min={10} max={40}
+                                                                type="number"
+                                                                step="1"
+                                                                value={maxLength}
+                                                                onChange={e => handleMaxLength(e)}/>
+                                                        </FormGroup>
+                                                    </Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col>
+                                                        <FormGroup>
+                                                            <label className="form-control-label" htmlFor="vocal-size">
+                                                                Number of words used as token
+                                                                <i href="#" id="vocal-size-icon" className="fas fa-info-circle ml-1" />
+                                                                <UncontrolledTooltip delay={0} placement="right" target="vocal-size-icon">
+                                                                    ...
+                                                                </UncontrolledTooltip>
+                                                            </label>
+
+                                                            <Input id="vocal-size"
+                                                                name="vocal-size"
+                                                                min={10} max={40}
+                                                                type="number"
+                                                                step="1"
+                                                                value={vocalSize}
+                                                                onChange={e => handleVocalSize(e)}/>
                                                         </FormGroup>
                                                     </Col>
                                                 </Row>

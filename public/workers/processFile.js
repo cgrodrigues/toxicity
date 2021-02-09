@@ -63,8 +63,13 @@ async function processFile(data, maxLines, stopWords, maxLength, noWordInLine, v
         }
     });
 
+
+    console.log('[' + new Date().toISOString().slice(11,-5) + ']: ', 'after get the value of the column comment_text');
+
     // Change to lower case
     sentences = sentences.map((str) => { return str.toLowerCase() });
+
+    console.log('[' + new Date().toISOString().slice(11,-5) + ']: ', 'after transform to lower case');
 
     
     // Remove stop words and other characters
@@ -84,7 +89,7 @@ async function processFile(data, maxLines, stopWords, maxLength, noWordInLine, v
             
     });
 
-    console.log(sentences);
+    console.log('[' + new Date().toISOString().slice(11,-5) + ']: ', 'after replace special characters');
 
     sentences = sentences.map((item) => {
         return stopWords.reduce((acc, stopWord) => {
@@ -99,19 +104,19 @@ async function processFile(data, maxLines, stopWords, maxLength, noWordInLine, v
                 .trim();
     });
 
-    console.log(sentences);
+    console.log('[' + new Date().toISOString().slice(11,-5) + ']: ', 'after remove stop words');
 
     // Convert sentences to words
     const words = sentences.map((item) => { return resize(item.split(" "), maxLength, noWordInLine) });
 
 
-    console.log(words);
+    console.log('[' + new Date().toISOString().slice(11,-5) + ']: ', 'after convert sentences to words');
 
     // Create array with all words and id as token and add "noWordInLine"
 
     let tokenizer = words.flat();
 
-    console.log('after flat');
+    console.log('[' + new Date().toISOString().slice(11,-5) + ']: ', 'after create array with all words to create tokens');
     
     tokenizer = tokenizer.reduce((acc, el) => { 
         const x = acc.find(obj => obj.word === el); 
@@ -125,20 +130,22 @@ async function processFile(data, maxLines, stopWords, maxLength, noWordInLine, v
         }, [{ ct: vocalSize*100+1, word: noWordInLine }, 
             { ct: vocalSize*100, word: oovToken }]);
     
-    console.log('after reduce');
+    console.log('[' + new Date().toISOString().slice(11,-5) + ']: ', 'after remove duplicates in the tokens array');
                 
     tokenizer = tokenizer.sort((a,b) =>{return b.ct - a.ct;});
 
-    console.log('after sort');
+    console.log('[' + new Date().toISOString().slice(11,-5) + ']: ', 'after sort the token array');
 
     tokenizer = tokenizer.map((el, ind) => {return { ct: el.ct, token: ind, word: el.word }});
 
-    console.log('after map');
+    console.log('[' + new Date().toISOString().slice(11,-5) + ']: ', 'after create token of each word in tokens array');
 
     // Resize the array to has a maximum size "vocalSize"
     if (tokenizer.length > vocalSize) {
         tokenizer.length = vocalSize;
     }
+
+    console.log('[' + new Date().toISOString().slice(11,-5) + ']: ', 'after resize the tokens array');
 
     // Convert works to respective token
     const wordsTokenized = words.map(
@@ -150,6 +157,8 @@ async function processFile(data, maxLines, stopWords, maxLength, noWordInLine, v
                 })
         });
 
+    console.log('[' + new Date().toISOString().slice(11,-5) + ']: ', 'after convert all words to respective token');
+
 
     // Get the lables and create a training output vector
     const target = data.map((item) => {
@@ -160,6 +169,8 @@ async function processFile(data, maxLines, stopWords, maxLength, noWordInLine, v
         item.threat,
         item.toxic];
     });
+
+    console.log('[' + new Date().toISOString().slice(11,-5) + ']: ', 'after create the labels vector for training');
 
 
     return {tokenizer: tokenizer, 
