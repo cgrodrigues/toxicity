@@ -41,6 +41,8 @@ const CreateTrainTest = (props) => {
 
     const maxLines = 200000; //Maximum lines to process from the file
 
+    const outputSize = 6; //Size of the output 
+
     const initBatchSize = 32;
     const initEpochs = 5;
 
@@ -63,6 +65,7 @@ const CreateTrainTest = (props) => {
         data: undefined, // array with sentances x words used for training. Each element is a word. Each line is a sentance. 
         dataTokenized: undefined,  // data Tokenized
         target: undefined, // all the lables of the training data
+        targetLabels: undefined, //Name of the columns of the target
         tokenizer: undefined, // all words and tokens
         model: undefined, // the prediction model
         trained: false, // The model is already trained and ready for use
@@ -98,7 +101,8 @@ const CreateTrainTest = (props) => {
                     ...info, tokenizer: $event.data.tokenizer,
                     data: $event.data.words,
                     dataTokenized: $event.data.dataTokenized,
-                    target: $event.data.target
+                    target: $event.data.target,
+                    targetLabels: $event.data.targetLabels
                 });
 
                 // Set that finish teh file processing
@@ -207,7 +211,7 @@ const CreateTrainTest = (props) => {
 
         // Create a Dense layer 
         // tf.keras.layers.Dense(6, activation='sigmoid')
-        model.add(tf.layers.dense({ units: 6, activation: "sigmoid" }));
+        model.add(tf.layers.dense({ units: outputSize, activation: "sigmoid" }));
 
 
         // Compile the model

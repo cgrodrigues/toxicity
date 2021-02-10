@@ -170,11 +170,40 @@ async function processFile(data, maxLines, stopWords, maxLength, noWordInLine, v
         item.toxic];
     });
 
+    //console.log(target);
+
+    const target2 = data.map((item) => {
+        var ret = [];
+
+        for (var key in item) {
+            if (key !== 'comment_text' && key !== 'id'  && item.hasOwnProperty(key)) {
+                //console.log(key);
+                ret.push(item[key]);
+            }
+        }
+
+        return ret;
+    });
+
+    //console.log(target2);
+
+    var targetLabels = [];
+
+    for (var key in data[0]) {
+        if (key !== 'comment_text' && key !== 'id'  && data[0].hasOwnProperty(key)) {
+            targetLabels.push(key);
+        }
+    }
+
+    //console.log(targetLabels);
+
+
     console.log('[' + new Date().toISOString().slice(11,-5) + ']: ', 'after create the labels vector for training');
 
 
     return {tokenizer: tokenizer, 
             words: words, 
             dataTokenized: wordsTokenized, 
-            target: target}
+            target: target,
+            targetLabels: targetLabels}
 }
