@@ -39,7 +39,7 @@ function App() {
           </Switch>
         </div>
       </BrowserRouter>
-      <Footer/>
+      <Footer link="https://github.com/cgrodrigues/toxicity"/>
     </div>
   );
 }
